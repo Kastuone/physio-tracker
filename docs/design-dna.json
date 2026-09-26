@@ -1,0 +1,48 @@
+{
+  "name": "Training Log — Quiet Performance",
+  "designSystem": {
+    "colors": {
+      "background": "#f3f5f2",
+      "surface": "#ffffff",
+      "ink": "#192b24",
+      "muted": "#5d6961",
+      "accent": "#2c5745",
+      "tint": "#e6ede4",
+      "line": "#d6ded6",
+      "error": "#923e2e"
+    },
+    "typography": {
+      "family": "Manrope, system-ui, sans-serif",
+      "weights": [400, 600, 800],
+      "heading": "Tight tracking, large quiet hierarchy",
+      "numbers": "Tabular numerals for every input, timer and progress count"
+    },
+    "spacing": {
+      "base": 4,
+      "section": 28,
+      "desktopPage": 42,
+      "mobilePage": 20,
+      "inputHeight": 48,
+      "minimumActionTarget": 44
+    },
+    "surfaces": {
+      "radius": 12,
+      "fieldRadius": 6,
+      "dividers": "Thin continuous ledger rules",
+      "shadows": "Dialogs and transient feedback only"
+    }
+  },
+  "designStyle": {
+    "concept": "A premium personal training journal with the clarity of a performance instrument.",
+    "composition": "Flat exercise ledger; asymmetric desktop session rail; mobile bottom navigation.",
+    "identity": "Slash logomark, small numbered exercise indices, green completion ink.",
+    "imagery": "None. Actual performance entries are the visual subject.",
+    "copy": "Natural Turkish; exercise names retained from the original prescription."
+  },
+  "visualEffects": {
+    "approach": "Lightweight CSS, no animation framework or ornamental canvas.",
+    "completion": "220ms completion response; 400ms progress-ring update.",
+    "controls": "160ms color and press feedback.",
+    "reducedMotion": "All transitions, animations and smooth scrolling disabled when requested."
+  }
+}

@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#f3f5f2" />
+    <title>Training Log | Antrenman günlüğün</title>
+    <meta
+      name="description"
+      content="Programını takip et, setlerini kaydet, gelişimini gör. Kişisel antrenman günlüğün."
+    />
+    <meta name="robots" content="noindex,nofollow" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='8' fill='%232c5745'/%3E%3Ctext x='8' y='29' fill='white' font-size='28' font-family='sans-serif'%3E/%3C/text%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="/studio.css?v=2" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">İçeriğe geç</a>
+    <div id="demo-banner" hidden>
+      ÖRNEK GÖRÜNÜM · Veriler kurgusaldır, kişisel kayıtlarına ve buluta
+      yazılmaz. <a href="/">Kendi günlüğüme dön</a>
+    </div>
+    <aside class="sidebar">
+      <a class="brand" href="#training" aria-label="Training Log antrenman"
+        ><span class="brand-mark" aria-hidden="true">/</span
+        ><span>TRAINING<br />LOG<span class="brand-period">.</span></span></a
+      >
+      <p class="sidebar-caption">Kişisel antrenman günlüğün</p>
+      <nav class="main-nav" aria-label="Ana gezinme">
+        <button data-view="training" aria-current="page">
+          <span data-icon="barbell"></span><span>Antrenman</span
+          ><span class="nav-arrow">↗</span>
+        </button>
+        <button data-view="program">
+          <span data-icon="calendar"></span><span>Program</span>
+        </button>
+        <button data-view="history">
+          <span data-icon="chart"></span><span>Geçmiş</span>
+        </button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="block-number">04<span>HAFTALIK BLOK</span></div>
+        <p>Azar azar.<br />Düzenli olarak.</p>
+        <button class="profile" data-settings>
+          <span class="avatar">TL</span
+          ><span>Benim günlüğüm<small>Hesap ve yedekler</small></span
+          ><span data-icon="settings"></span>
+        </button>
+      </div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+        <a class="mobile-brand" href="#training">/ TRAINING LOG.</a
+        ><span id="breadcrumb">Günlüğüm <span>/</span> Antrenman</span>
+        <div class="top-actions">
+          <button id="save-badge" class="save-badge" data-settings>
+            <span class="status-dot"></span
+            ><span id="save-label">Yerel kayıt</span></button
+          ><button
+            class="icon-button"
+            data-settings
+            aria-label="Hesap ve ayarlar"
+          >
+            <span data-icon="settings"></span>
+          </button>
+        </div>
+      </header>
+      <div class="storage-error" id="storage-error" role="alert" hidden></div>
+      <main id="main" tabindex="-1">
+        <section id="training-view" class="view">
+          <div class="page-heading">
+            <div>
+              <p class="eyebrow" id="session-kicker">1. HAFTA / SALI</p>
+              <h1 id="workout-title">Göğüs <span>& sırt.</span></h1>
+              <p class="subtitle" id="workout-subtitle">
+                Bugünün odağı: kontrollü, iyi tekrarlar.
+              </p>
+            </div>
+            <label class="week-select"
+              ><span>Program haftası</span
+              ><select id="week" aria-label="Program haftası">
+                <option value="1">1. hafta</option>
+                <option value="2">2. hafta</option>
+                <option value="3">3. hafta</option>
+                <option value="4">4. hafta</option>
+              </select></label
+            >
+          </div>
+          <nav class="day-tabs" id="day-tabs" aria-label="Antrenman günü"></nav>
+          <div class="mobile-session">
+            <span id="mobile-progress">0 / 12 set</span
+            ><button class="text-button" id="mobile-start">
+              Antrenmana başla ↗
+            </button>
+          </div>
+          <div class="training-layout">
+            <div class="training-main">
+              <div class="section-line">
+                <h2>Hareketlerin</h2>
+                <span id="exercise-meta"></span>
+              </div>
+              <div id="exercise-list" class="exercise-list"></div>
+              <details class="session-notes">
+                <summary>
+                  Seans notları & toparlanma <span data-icon="plus"></span>
+                </summary>
+                <div class="notes-grid">
+                  <label>Seans tarihi<input type="date" id="date" /></label
+                  ><label
+                    >Seans notu<textarea
+                      id="note"
+                      rows="3"
+                      maxlength="5000"
+                      placeholder="Bugün nasıl geçti?"
+                    ></textarea></label
+                  ><label
+                    >Ertesi sabah dizin<textarea
+                      id="next"
+                      rows="3"
+                      maxlength="5000"
+                      placeholder="Şişlik, sertlik veya yürüyüşte değişiklik..."
+                    ></textarea></label
+                  ><label id="legacy-bike-label" hidden
+                    >Önceki bisiklet kaydı (dk)<input
+                      id="bike"
+                      inputmode="decimal"
+                      type="number"
+                      min="0"
+                      step="0.5"
+                    /><small
+                      >Geçmiş kayıt alanı; güncel egzersiz önerisi
+                      değildir.</small
+                    ></label
+                  ><label class="checkline"
+                    ><input type="checkbox" id="skipped" />Bu seansı
+                    atladım</label
+                  >
+                </div>
+              </details>
+              <div class="session-end">
+                <span>Her tekrar, bir sonraki seans için referans.</span
+                ><button class="text-button" id="go-history">
+                  Geçmişi gör <span aria-hidden="true">↗</span>
+                </button>
+              </div>
+            </div>
+            <aside class="session-aside">
+              <section class="session-summary">
+                <div class="section-line">
+                  <h2>Bu seans</h2>
+                  <span id="session-duration"></span>
+                </div>
+                <div class="completion">
+                  <svg viewBox="0 0 160 160" aria-hidden="true">
+                    <circle class="ring-track" cx="80" cy="80" r="70" />
+                    <circle id="ring-value" cx="80" cy="80" r="70" />
+                  </svg>
+                  <div>
+                    <strong id="done-count">0<span>/12</span></strong
+                    ><span>SET TAMAMLANDI</span>
+                  </div>
+                </div>
+                <p id="progress-text" aria-live="polite">
+                  İlk setinle başlayalım.
+                </p>
+                <button class="primary" id="start-session">
+                  Antrenmana başla <span aria-hidden="true">↗</span>
+                </button>
+                <div class="session-stats">
+                  <div>
+                    <strong id="exercise-count">6</strong><span>hareket</span>
+                  </div>
+                  <div>
+                    <strong id="rir-target">3-4</strong><span>hedef RIR</span>
+                  </div>
+                </div>
+              </section>
+              <section class="timer-panel">
+                <div class="section-line">
+                  <h2>Set arası</h2>
+                  <button
+                    class="icon-button"
+                    id="timer-reset"
+                    aria-label="Sayacı sıfırla"
+                  >
+                    <span data-icon="reset"></span>
+                  </button>
+                </div>
+                <div class="timer-line">
+                  <output id="timer-display" aria-label="Kalan dinlenme süresi"
+                    >01:30</output
+                  ><button
+                    id="timer-toggle"
+                    class="timer-play"
+                    aria-label="Dinlenme sayacını başlat"
+                  >
+                    <span data-icon="play"></span>
+                  </button>
+                </div>
+                <div class="timer-choices" aria-label="Dinlenme süresi">
+                  <button data-seconds="60">60 sn</button
+                  ><button data-seconds="90" aria-pressed="true">90 sn</button
+                  ><button data-seconds="120">120 sn</button>
+                </div>
+              </section>
+              <section class="prep-panel">
+                <h2>İyi bir başlangıç.</h2>
+                <p>
+                  Omuz ve dirseklerini rahatça hareket ettir. İlk itiş ve
+                  çekişte hafif bir hazırlık seti yap.
+                </p>
+                <label class="checkline"
+                  ><input type="checkbox" id="warmup" />Isınmam tamam</label
+                >
+                <details>
+                  <summary>Seans sonu</summary>
+                  <p>
+                    Supine Abdominal Bracing: bacakların rahat desteklenmişken
+                    karnını hafifçe sık, nefes almaya devam et; 3 × 5 yavaş
+                    nefes. Seated Chest Stretch ve Seated Cross-Body Shoulder
+                    Stretch: 2 × 20 saniye; ağrıya bastırmadan.
+                  </p>
+                  <label class="checkline"
+                    ><input type="checkbox" id="cooldown" />Seans sonu
+                    tamam</label
+                  >
+                </details>
+              </section>
+            </aside>
+          </div>
+        </section>
+        <section id="program-view" class="view" hidden>
+          <div class="page-heading">
+            <div>
+              <p class="eyebrow">4 HAFTA / 3 GÜN</p>
+              <h1>Planın <span>burada.</span></h1>
+              <p class="subtitle">
+                Hareketler sabit. İlerlemen, kendi hızında.
+              </p>
+            </div>
+            <button class="secondary" id="print">Yazdır / PDF</button>
+          </div>
+          <div id="program-days"></div>
+          <section class="adaptations">
+            <h2>Bu seansın uyarlamaları</h2>
+            <p id="adaptation-context"></p>
+            <label class="checkline" id="ready-wrap"
+              ><input type="checkbox" id="ready" />Toparlanma iyi; bu hafta
+              normal setlere geç</label
+            ><label class="checkline" id="physio-wrap"
+              ><input type="checkbox" id="physio" />Bu cumartesi fizyoterapim de
+              var</label
+            ><label class="checkline"
+              ><input type="checkbox" id="reduce" />Uzayan yorgunluk: her
+              hareketten 1 set azalt</label
+            >
+            <p class="small">
+              Uyarlamalar ve seansa özel set sayıları geçmiş kayıtları silmez.
+              “Programdaki sayıya dön” ile özel set sayısını kaldırabilirsin.
+            </p>
+          </section>
+          <div id="program-rules"></div>
+        </section>
+        <section id="history-view" class="view" hidden>
+          <div class="page-heading">
+            <div>
+              <p class="eyebrow">ANTRENMAN ARŞİVİ</p>
+              <h1>İlerlemen <span>iz bırakır.</span></h1>
+              <p class="subtitle">
+                Son seansını hatırla. Bir sonraki seansına hazırlan.
+              </p>
+            </div>
+            <button class="secondary" id="export-history">Yedeği indir</button>
+          </div>
+          <div id="history-stats" class="history-stats"></div>
+          <div class="history-filter">
+            <label
+              >Harekete göre incele<select id="history-exercise">
+                <option value="">Tüm hareketler</option>
+              </select></label
+            ><label
+              >Hafta<select id="history-week">
+                <option value="">Tüm haftalar</option>
+                <option value="1">1. hafta</option>
+                <option value="2">2. hafta</option>
+                <option value="3">3. hafta</option>
+                <option value="4">4. hafta</option>
+              </select></label
+            >
+          </div>
+          <div id="history-list"></div>
+        </section>
+      </main>
+      <footer class="page-footer">
+        <span>TRAINING LOG.</span><span>Kendi ritminde, kayıt altında.</span>
+      </footer>
+    </div>
+    <dialog id="settings-dialog" aria-labelledby="settings-title">
+      <div class="dialog-heading">
+        <h2 id="settings-title">Günlüğün, her cihazda.</h2>
+        <button
+          class="icon-button"
+          data-close="settings-dialog"
+          aria-label="Ayarları kapat"
+        >
+          <span data-icon="close"></span>
+        </button>
+      </div>
+      <p class="dialog-intro">
+        Aynı kodla giriş yaparak telefon ve bilgisayarındaki kayıtları eşitle.
+      </p>
+      <section id="cloud">
+        <p id="cloud-status" role="status" aria-live="polite">
+          Oturum kontrol ediliyor...
+        </p>
+        <form id="cloud-login">
+          <label
+            >Kişisel erişim kodu<input
+              id="access-code"
+              type="password"
+              autocomplete="current-password"
+              maxlength="200"
+              required /></label
+          ><button class="primary" type="submit">Giriş yap ve eşitle</button>
+        </form>
+        <div id="cloud-actions" hidden>
+          <button class="primary" id="cloud-refresh">Şimdi eşitle</button
+          ><button class="secondary" id="cloud-logout">Çıkış yap</button>
+        </div>
+        <div id="cloud-conflict" hidden>
+          <h3>İki farklı kayıt var.</h3>
+          <p>
+            Çakışan alanlar için hangi cihazın değerlerini kullanacağını seç.
+            Diğer alanlar birleştirilir.
+          </p>
+          <ul id="conflict-list"></ul>
+          <button class="secondary" id="keep-local">Bu cihazdakileri tut</button
+          ><button class="secondary" id="keep-remote">Buluttakileri tut</button>
+        </div>
+      </section>
+      <section class="backup-panel">
+        <h3>Yedeğin sende kalsın.</h3>
+        <p>Kayıtlarını JSON dosyası olarak indir veya önceki yedeğini yükle.</p>
+        <div class="button-row">
+          <button id="export" class="secondary">Yedeği indir</button
+          ><button id="import" class="secondary">Yedeği yükle</button
+          ><input
+            id="import-file"
+            type="file"
+            accept="application/json,.json"
+            hidden
+          />
+        </div>
+        <p id="backup-status" role="status"></p>
+      </section>
+      <p class="small">
+        Çıkış yapmak bu cihazdaki kayıtları silmez. Bağlantı kesilirse açık
+        sayfada yaptığın girişler cihazında saklanır.
+      </p>
+    </dialog>
+    <dialog id="confirm-dialog" aria-labelledby="confirm-title">
+      <h2 id="confirm-title">Kaydı güncelle</h2>
+      <p id="confirm-message"></p>
+      <div class="button-row">
+        <button class="secondary" id="confirm-cancel">Vazgeç</button
+        ><button class="primary" id="confirm-ok">Devam et</button>
+      </div>
+    </dialog>
+    <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+    <div id="print-content"></div>
+    <noscript
+      ><p>Set girişi ve eşitleme için JavaScript'i etkinleştir.</p></noscript
+    >
+    <script type="module" src="/app.js?v=2"></script>
+  </body>
+</html>
