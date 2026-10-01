@@ -54,7 +54,7 @@ async function setup({
       return { ok: true, json: async () => ({ authenticated: true }) };
     if (opts.method === "PUT") {
       puts++;
-      assert.equal(opts.headers["X-Fitness-Schema"], "2");
+      assert.equal(opts.headers["X-Fitness-Schema"], "3");
       if (onPut) {
         const error = onPut({ get: () => data, set: (d) => (data = d), puts });
         if (error)

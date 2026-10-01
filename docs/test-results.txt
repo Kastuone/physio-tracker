@@ -1,36 +1,39 @@
-npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
 
 > test
 > node --test tests/*.test.js
 
-✔ complete flow: log, complete, correct, change day, return, reload and review history (952.861804ms)
-✔ add/remove set retains hidden values and restores them after reload (431.505287ms)
-✔ clearing completed weight reopens set; negative values are never saved (230.321135ms)
-✔ empty history is truthful and incomplete sets appear as drafts (170.749935ms)
-✔ v1 data is backed up before first edit, preserving notes and adaptation fields (163.576745ms)
-✔ quota failure never reports saved and blocks sync, retaining in-memory draft (105.034295ms)
-✔ corrupt local data is not overwritten and cannot sync (76.709199ms)
-✔ demo edits never change personal local records (71.350846ms)
-✔ all days and views render; extra-long alternative names remain exact (282.99113ms)
-✔ v1 migration preserves every original field and hidden rehabilitation entry (4.372909ms)
-✔ extra sets survive removal, normalization, merging and restoration (2.665957ms)
-✔ conflicting values require explicit choice; non-conflicting fields survive both choices (2.793101ms)
-✔ prescription retains original 12 / 14 / 14 / 12 sets and physio reduction (0.835724ms)
-✔ unsupported sets and corrupt imports are rejected rather than silently truncated (1.118635ms)
-✔ Blob reads preserve the strong ETag; weak versions are refused (0.6329ms)
-✔ Blob writes use ifMatch and first-write protection, never blind overwrite (4.517859ms)
-✔ existing authentication retains signed expiry cookie and origin checks (5.46841ms)
-✔ successful sync marks cloud current only after a successful PUT (251.794654ms)
-✔ failed PUT keeps local entry and never reports synced (123.334965ms)
-✔ edits made while PUT is in flight survive and are sent in the next sync (69.089521ms)
-✔ conflict prevents automatic overwrite and exposes both choices (83.286859ms)
-✔ remote data that cannot persist locally does not advance the merge base (34.270509ms)
-✔ repeated ETag conflicts are bounded and do not overwrite server (43.856307ms)
-ℹ tests 23
+✔ complete flow: log, complete, correct, change day, return, reload and review history (397.048034ms)
+✔ add/remove set retains hidden values and restores them after reload (173.491431ms)
+✔ clearing completed weight reopens set; negative values are never saved (82.291462ms)
+✔ empty history is truthful and incomplete sets appear as drafts (59.979539ms)
+✔ v1 data is backed up before first edit, preserving notes and adaptation fields (47.33723ms)
+✔ quota failure never reports saved and blocks sync, retaining in-memory draft (44.253849ms)
+✔ corrupt local data is not overwritten and cannot sync (42.471083ms)
+✔ demo edits never change personal local records (41.305522ms)
+✔ all days and views render; extra-long alternative names remain exact (185.168041ms)
+✔ new routine survives reload without changing existing records (211.009958ms)
+✔ phase 2 logs weights and seconds, retains hidden sets and history after reload (335.844923ms)
+✔ v1 migration preserves every original field and hidden rehabilitation entry (2.930125ms)
+✔ extra sets survive removal, normalization, merging and restoration (1.684558ms)
+✔ conflicting values require explicit choice; non-conflicting fields survive both choices (1.460671ms)
+✔ prescription retains original 12 / 14 / 14 / 12 sets and physio reduction (0.351861ms)
+✔ unsupported sets and corrupt imports are rejected rather than silently truncated (0.420343ms)
+✔ Blob reads preserve the strong ETag; weak versions are refused (0.338199ms)
+✔ Blob writes use ifMatch and first-write protection, never blind overwrite (0.754056ms)
+✔ existing authentication retains signed expiry cookie and origin checks (1.441512ms)
+✔ rehabilitation entries survive concurrent merge with upper-body data (2.488299ms)
+✔ old schema clients cannot overwrite rehabilitation records (3.748488ms)
+✔ successful sync marks cloud current only after a successful PUT (122.127109ms)
+✔ failed PUT keeps local entry and never reports synced (37.030301ms)
+✔ edits made while PUT is in flight survive and are sent in the next sync (36.412564ms)
+✔ conflict prevents automatic overwrite and exposes both choices (32.60671ms)
+✔ remote data that cannot persist locally does not advance the merge base (30.308907ms)
+✔ repeated ETag conflicts are bounded and do not overwrite server (29.752029ms)
+ℹ tests 27
 ℹ suites 0
-ℹ pass 23
+ℹ pass 27
 ℹ fail 0
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 3807.109897
+ℹ duration_ms 2084.939399

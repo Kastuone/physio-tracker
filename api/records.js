@@ -9,7 +9,7 @@ export default async function handler(req, res) {
     return reply(res, 405, { error: "Yöntem desteklenmiyor." });
   if (!process.env.BLOB_READ_WRITE_TOKEN)
     return reply(res, 503, { error: "Özel kayıt deposu henüz hazır değil." });
-  if (req.method === "PUT" && req.headers["x-fitness-schema"] !== "2")
+  if (req.method === "PUT" && req.headers["x-fitness-schema"] !== "3")
     return reply(res, 426, {
       error: "Uygulama güncellendi. Kayıtlarını korumak için sayfayı yenile.",
     });

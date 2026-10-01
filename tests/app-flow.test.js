@@ -38,7 +38,7 @@ function app({ demo = false, stored = {}, quota = false } = {}) {
       throw new Error("QuotaExceededError");
     };
   w.eval(
-    "const {empty,normalize,merge,MAX_SETS,DAYS,EXERCISES,prescription,icon}=window.__deps;\n" +
+    "const {empty,normalize,merge,MAX_SETS,DAYS,EXERCISES,prescription,applyThreeSetSession,icon}=window.__deps;\n" +
       src,
   );
   return {
@@ -224,5 +224,82 @@ test("all days and views render; extra-long alternative names remain exact", () 
     a.d.getElementById("exercise-row").textContent,
     /Incline Bench Chest-Supported Dumbbell Row/,
   );
+  a.close();
+});
+
+test("new routine survives reload without changing existing records", () => {
+  const original = {
+    version: 2,
+    weeks: {},
+    sessions: {
+      "1-1": { entries: { "triceps-0": { kg: "15", reps: "12", done: true } } },
+    },
+  };
+  const a = app({ stored: { [KEY]: JSON.stringify(original) } });
+  click(a, '[data-day="0"]');
+  click(a, "#apply-three-sets");
+  const saved = a.w.localStorage.getItem(KEY);
+  const parsed = JSON.parse(saved);
+  assert.equal(parsed.sessions["1-0"].setCounts.chest, 3);
+  assert.equal(
+    parsed.sessions["1-0"].alts.lateral,
+    "Standing Dumbbell Lateral Raise",
+  );
+  assert.equal(
+    parsed.sessions["1-0"].alts.triceps,
+    "Standing Cable Triceps Pushdown",
+  );
+  assert.deepEqual(parsed.sessions["1-1"], original.sessions["1-1"]);
+  click(a, '[data-day="1"]');
+  click(a, "#apply-three-sets");
+  assert.deepEqual(
+    JSON.parse(a.w.localStorage.getItem(KEY)).sessions["1-1"],
+    original.sessions["1-1"],
+  );
+  a.close();
+  const b = app({ stored: { [KEY]: saved } });
+  click(b, '[data-day="0"]');
+  assert.equal(b.d.querySelectorAll("#exercise-chest .set-row").length, 3);
+  assert.match(
+    b.d.getElementById("exercise-lateral").textContent,
+    /Standing Dumbbell/,
+  );
+  click(b, '[data-view="program"]');
+  click(b, "#rehab-note");
+  assert.match(b.d.getElementById("note").value, /Diz takibi/);
+  b.close();
+});
+
+test("phase 2 logs weights and seconds, retains hidden sets and history after reload", () => {
+  let a = app();
+  click(a, "#apply-three-sets");
+  click(a, "#enable-rehab");
+  assert.equal(a.d.querySelectorAll(".exercise").length, 11);
+  fill(a, input("legpress-0", "kg"), "20");
+  fill(a, input("legpress-0", "reps"), "12");
+  click(a, '[data-done="legpress-0"]');
+  fill(a, input("balance-0", "seconds"), "30");
+  click(a, '[data-done="balance-0"]');
+  assert.equal(
+    a.w.fitnessApp.getData().sessions["1-0"].entries["balance-0"].done,
+    true,
+  );
+  click(a, '[data-plus="bridge"]');
+  fill(a, input("bridge-3", "kg"), "0");
+  fill(a, input("bridge-3", "reps"), "15");
+  click(a, '[data-minus="bridge"]');
+  const saved = a.w.localStorage.getItem(KEY);
+  a.close();
+  a = app({ stored: { [KEY]: saved } });
+  assert.equal(a.d.querySelector(input("balance-0", "seconds")).value, "30");
+  click(a, '[data-plus="bridge"]');
+  assert.equal(a.d.querySelector(input("bridge-3", "reps")).value, "15");
+  click(a, '[data-day="1"]');
+  assert.equal(a.d.querySelectorAll(".exercise").length, 6);
+  click(a, '[data-day="0"]');
+  assert.equal(a.d.querySelectorAll(".exercise").length, 11);
+  click(a, '[data-view="history"]');
+  assert.match(a.d.getElementById("history-list").textContent, /30 saniye/);
+  assert.match(a.d.getElementById("history-stats").textContent, /240/);
   a.close();
 });

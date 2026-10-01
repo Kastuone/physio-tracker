@@ -2109,3 +2109,48 @@ body.demo .sidebar {
     font-size: 16px;
   }
 }
+
+.rehab-reference {
+  margin: 32px 0;
+  padding: 24px 0;
+  border-block: 1px solid var(--line, #d6ded6);
+}
+.rehab-reference p {
+  max-width: 72ch;
+  line-height: 1.65;
+}
+.rehab-list {
+  margin: 24px 0;
+}
+.rehab-list > div {
+  display: grid;
+  grid-template-columns: minmax(150px, 1fr) 2fr;
+  gap: 20px;
+  padding: 16px 0;
+  border-bottom: 1px solid #d6ded6;
+}
+.rehab-list dt {
+  font-weight: 800;
+}
+.rehab-list dd {
+  margin: 0;
+  line-height: 1.5;
+}
+@media (max-width: 600px) {
+  .rehab-list > div {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+}
+
+.set-table.timed .set-header,
+.set-table.timed .set-row {
+  grid-template-columns: 40px minmax(0, 1fr) 56px;
+}
+.set-table.timed .set-header > :nth-child(2),
+.set-table.timed .set-header > :nth-child(4) {
+  display: none;
+}
+.rehab-entry {
+  padding: 12px 0 20px;
+}

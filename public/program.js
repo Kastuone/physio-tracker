@@ -1,5 +1,47 @@
 // Exercise prescription preserved from the existing tracker.
 export const EXERCISES = {
+  legpress: {
+    name: "Leg Press",
+    short: "Leg Press",
+    group: "Faz 2 · Bacak",
+    alt: [],
+    rehab: true,
+    note: "Hocanın planı: 3 × 12. Yük ve diz açısı belirtilmedi; fizyoterapistinle belirle. Ağrılı son açıyı zorlamadan çalış.",
+  },
+  legcurl: {
+    name: "Leg Curl",
+    short: "Leg Curl",
+    group: "Faz 2 · Bacak",
+    alt: [],
+    rehab: true,
+    note: "Hocanın planı: 3 × 12. Hamstring greftine uygun yük ve hareket aralığını tedavi ekibinle netleştir. Bu kayıt alanı klinik onay değildir.",
+  },
+  stepup: {
+    name: "Alçak Basamak Step-up",
+    short: "Step-up",
+    group: "Faz 2 · Bacak",
+    alt: [],
+    rehab: true,
+    note: "Hocanın planı: 3 × 10. Basamak yüksekliği ve hangi tarafın çalışacağı belirtilmedi; hocanla netleştir, tarafı seans notuna yaz. Ek ağırlık yoksa 0 kg gir.",
+  },
+  bridge: {
+    name: "Glute Bridge",
+    short: "Glute Bridge",
+    group: "Faz 2 · Bacak",
+    alt: [],
+    rehab: true,
+    note: "Hocanın planı: 3 × 15. Tek/çift bacak ayrımı belirtilmedi; videodan yeni varyant ekleme. Ek ağırlık yoksa 0 kg gir.",
+  },
+  balance: {
+    name: "Tek Ayak Denge",
+    short: "Tek Ayak Denge",
+    group: "Faz 2 · Denge",
+    alt: [],
+    rehab: true,
+    timed: true,
+    note: "Hocanın planı: 3 × 30 saniye. Süreyi saniye olarak kaydet. Taraf, zemin ve destek şeklini hocanla netleştir; bunları seans notuna yaz.",
+  },
+
   chest: {
     name: "Seated Machine Chest Press",
     short: "Chest Press",
@@ -23,7 +65,8 @@ export const EXERCISES = {
     name: "Seated Dumbbell Lateral Raise",
     short: "Lateral Raise",
     group: "Omuz",
-    alt: [],
+    alt: ["Standing Dumbbell Lateral Raise"],
+    note: "Ayakta varyantta gövdeyi savurma; dizinden destek alarak ağırlığı itme.",
   },
   preacher: {
     name: "Preacher Curl",
@@ -35,8 +78,12 @@ export const EXERCISES = {
     name: "Seated Cable Triceps Pushdown",
     short: "Triceps Pushdown",
     group: "Triceps",
-    alt: ["Triceps Extension Machine", "Bu hareketi çıkar"],
-    note: "Sabit sehpayla güvenli kurulum varsa. Uygun kurulum ve alternatif yoksa hareketi çıkar.",
+    alt: [
+      "Standing Cable Triceps Pushdown",
+      "Triceps Extension Machine",
+      "Bu hareketi çıkar",
+    ],
+    note: "Oturarak veya ayakta cable pushdown seçebilirsin. Ayakta gövdeyi sabit tut; bacakla itme. Baş üstü triceps extension ayrı bir harekettir.",
   },
   shoulder: {
     name: "Seated Machine Shoulder Press",
@@ -111,7 +158,7 @@ export const DAYS = [
 ];
 export function prescription(data, week, day) {
   const s = data.sessions[`${week}-${day}`] || {};
-  return DAYS[day].rows
+  const upper = DAYS[day].rows
     .map(([id, sets, lo, hi], index) => {
       const target = Math.max(
         1,
@@ -132,4 +179,56 @@ export function prescription(data, week, day) {
     .filter(
       (r) => !(day === 2 && s.physio && ["preacher", "triceps"].includes(r.id)),
     );
+  const legs = [
+    ["legpress", 12],
+    ["legcurl", 12],
+    ["stepup", 10],
+    ["bridge", 15],
+    ["balance", 30],
+  ];
+  return upper.concat(
+    legs
+      .filter(
+        ([id]) =>
+          s.rehab ||
+          Object.keys(s.entries || {}).some((k) => k.startsWith(id + "-")),
+      )
+      .map(([id, reps], index) => ({
+        id,
+        lo: reps,
+        hi: reps,
+        target: 3,
+        count: s.setCounts?.[id] ?? 3,
+        index: DAYS[day].rows.length + index,
+        rest: "",
+      })),
+  );
+}
+
+// Explicit per-session adoption. Never re-label or overwrite an existing session.
+export function applyThreeSetSession(data, week, day) {
+  const key = `${week}-${day}`;
+  if (!/^[1-4]-[0-2]$/.test(key)) return false;
+  const existing = data.sessions[key];
+  if (
+    existing &&
+    Object.values(existing).some(
+      (v) => v && (typeof v !== "object" || Object.keys(v).length),
+    )
+  )
+    return false;
+  data.sessions[key] = {
+    setCounts: Object.fromEntries(DAYS[day].rows.map(([id]) => [id, 3])),
+    alts: Object.fromEntries(
+      DAYS[day].rows
+        .filter(([id]) => ["lateral", "triceps"].includes(id))
+        .map(([id]) => [
+          id,
+          id === "lateral"
+            ? "Standing Dumbbell Lateral Raise"
+            : "Standing Cable Triceps Pushdown",
+        ]),
+    ),
+  };
+  return true;
 }

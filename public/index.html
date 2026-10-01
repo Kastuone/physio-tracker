@@ -104,6 +104,31 @@
                 <h2>Hareketlerin</h2>
                 <span id="exercise-meta"></span>
               </div>
+              <details class="session-notes">
+                <summary>Güncel rutinim · 3 set</summary>
+                <p>
+                  Boş seansı her harekette 3 set, ayakta lateral raise ve ayakta
+                  cable triceps pushdown ile hazırla. Tekrar aralıkları korunur;
+                  ağırlıkları kendin gir.
+                </p>
+                <button class="text-button" id="apply-three-sets">
+                  Bu boş seansı 3 setle hazırla ↗
+                </button>
+                <p class="small">
+                  Kayıtlı veya önceden uyarlanmış seans değişmez. Set +/− ile
+                  tek tek düzenleyebilirsin. Bu seçim fizyoterapi veya yorgunluk
+                  azaltması yerine kullanılmaz.
+                </p>
+              </details>
+              <div class="rehab-entry">
+                <button class="text-button" id="enable-rehab">
+                  Bu seansa Faz 2 hareketlerini ekle ↗
+                </button>
+                <p class="small">
+                  Leg press · Leg curl · Step-up · Bridge · Denge. Yükler boş
+                  başlar. Bacak hareketlerinde de set +/− kullanabilirsin.
+                </p>
+              </div>
               <div id="exercise-list" class="exercise-list"></div>
               <details class="session-notes">
                 <summary>
@@ -126,7 +151,7 @@
                       placeholder="Şişlik, sertlik veya yürüyüşte değişiklik..."
                     ></textarea></label
                   ><label id="legacy-bike-label" hidden
-                    >Önceki bisiklet kaydı (dk)<input
+                    >Bu seansın bisiklet süresi (dk)<input
                       id="bike"
                       inputmode="decimal"
                       type="number"
@@ -264,6 +289,89 @@
               “Programdaki sayıya dön” ile özel set sayısını kaldırabilirsin.
             </p>
           </section>
+          <section class="rehab-reference" aria-labelledby="rehab-title">
+            <p class="eyebrow">HOCANIN LİSTESİ · FAZ 2</p>
+            <h2 id="rehab-title">Faz 2 / 6–12 hafta</h2>
+            <p>
+              Fotoğraftaki liste aşağıda. Haftanın dolması tek başına ilerleme
+              izni değildir. Yük, hareket aralığı ve haftalık sıklık tedavini
+              takip eden fizyoterapist veya cerrah tarafından
+              kişiselleştirilmeli.
+            </p>
+            <p>
+              <strong>Haftalık yerleşim taslağı:</strong> Salı · Perşembe ·
+              Cumartesi. Bu üç gün salon rutinine göre seçildi; klinik sıklık
+              önerisi değildir.
+            </p>
+            <dl class="rehab-list">
+              <div>
+                <dt>Leg press</dt>
+                <dd>3 × 12</dd>
+              </div>
+              <div>
+                <dt>Leg curl</dt>
+                <dd>
+                  3 × 12 · hamstring greftine uygun başlangıç zamanı ve yük
+                  teyit edilmeli
+                </dd>
+              </div>
+              <div>
+                <dt>Alçak basamak step-up</dt>
+                <dd>
+                  3 × 10 · basamak yüksekliği ve destek şekli belirtilmemiş
+                </dd>
+              </div>
+              <div>
+                <dt>Glute bridge</dt>
+                <dd>3 × 15 · tek/çift bacak belirtilmemiş</dd>
+              </div>
+              <div>
+                <dt>Tek ayak denge</dt>
+                <dd>3 × 30 saniye · zemin ve destek şekli belirtilmemiş</dd>
+              </div>
+              <div>
+                <dt>Bisiklet</dt>
+                <dd>
+                  Listede 15 dakika · günlük uygulama kullanıcı tercihi; direnç
+                  ve sıklık kişiselleştirilmeli
+                </dd>
+              </div>
+            </dl>
+            <p>
+              <strong>Koşu, zıplama ve ani yön değiştirme:</strong> hocanın
+              belgesinde yasak. Profesyonel sporcu videoları bu sınırları
+              değiştirmez. Antrenman ekranındaki “Faz 2 hareketlerini ekle”
+              düğmesi bu listeyi seçili seansa ekler. Kayıt alanının açık olması
+              klinik uygunluk onayı değildir.
+            </p>
+            <p class="small">
+              <a
+                href="https://www.youtube.com/watch?v=ittYoVE0p1w"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Maddison videosu ↗</a
+              >
+              · İlham kaynağı; içeriği değerlendirilmedi, hareketleri programa
+              eklenmedi.
+            </p>
+            <button class="text-button" id="rehab-note">
+              Seans notuma diz takibi ekle ↗
+            </button>
+            <p class="small">
+              Ağrı, şişlik ve ertesi gün yanıtını kaydet. Bu notlar otomatik
+              egzersiz izni veya tanı üretmez. Artan şişlik, yeni ağrı veya
+              topallamada tetikleyen hareketi bırakıp fizyoterapistine danış.
+            </p>
+            <p class="small">
+              Araştırma:
+              <a
+                href="https://www.aspetar.com/en/professionals/aspetar-clinical-guidelines/recommendations-on-rehabilitation-after-aclr"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Aspetar ACL rehabilitasyon rehberi ↗</a
+              >
+            </p>
+          </section>
           <div id="program-rules"></div>
         </section>
         <section id="history-view" class="view" hidden>
@@ -376,6 +484,6 @@
     <noscript
       ><p>Set girişi ve eşitleme için JavaScript'i etkinleştir.</p></noscript
     >
-    <script type="module" src="/app.js?v=2"></script>
+    <script type="module" src="/app.js?v=3"></script>
   </body>
 </html>

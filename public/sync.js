@@ -134,7 +134,7 @@ async function sync(choice, approvedEtag) {
             method: "PUT",
             headers: {
               "Content-Type": "application/json",
-              "X-Fitness-Schema": "2",
+              "X-Fitness-Schema": "3",
             },
             body: JSON.stringify({ data: result.data, etag: remote.etag }),
           });

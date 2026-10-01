@@ -1,16 +1,18 @@
-// v2 accepts every v1 record; setCounts never deletes recorded sets.
+// v3 preserves v1/v2 records and adds rehabilitation sets and duration.
 export const MAX_SETS = 20;
-export const empty = () => ({ version: 2, weeks: {}, sessions: {} });
+export const empty = () => ({ version: 3, weeks: {}, sessions: {} });
 const ids = [
   ["chest", "row", "lat", "lateral", "preacher", "triceps"],
   ["shoulder", "row", "fly", "reverse", "hammer", "triceps"],
   ["chest", "lat", "row", "lateral", "preacher", "triceps"],
 ];
+for (const day of ids)
+  day.push("legpress", "legcurl", "stepup", "bridge", "balance");
 const object = (v) => v && typeof v === "object" && !Array.isArray(v);
 export function normalize(raw) {
   if (
     !raw ||
-    ![1, 2].includes(raw.version) ||
+    ![1, 2, 3].includes(raw.version) ||
     !object(raw.sessions) ||
     !object(raw.weeks)
   )
@@ -31,7 +33,14 @@ export function normalize(raw) {
           throw Error("Kayıt alanı geçersiz.");
         t[field] = v;
       }
-      for (const field of ["physio", "reduce", "warmup", "cooldown", "skipped"])
+      for (const field of [
+        "physio",
+        "reduce",
+        "warmup",
+        "cooldown",
+        "skipped",
+        "rehab",
+      ])
         if (s[field] === true) t[field] = true;
       for (const id of ids[d]) {
         const alt = s.alts?.[id];
@@ -51,7 +60,7 @@ export function normalize(raw) {
             v = s.entries?.[ek];
           if (!v) continue;
           const e = {};
-          for (const f of ["kg", "reps", "rir"]) {
+          for (const f of ["kg", "reps", "rir", "seconds"]) {
             if (v[f] === undefined || v[f] === "") continue;
             if (
               typeof v[f] !== "string" ||

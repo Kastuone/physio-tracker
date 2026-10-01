@@ -34,7 +34,7 @@ const old = {
 };
 test("v1 migration preserves every original field and hidden rehabilitation entry", () => {
   const result = normalize(old);
-  assert.deepEqual(result, { ...old, version: 2 });
+  assert.deepEqual(result, { ...old, version: 3 });
   assert.deepEqual(normalize(result), result);
 });
 test("extra sets survive removal, normalization, merging and restoration", () => {
@@ -97,7 +97,7 @@ test("unsupported sets and corrupt imports are rejected rather than silently tru
   const d = normalize(old);
   d.sessions["1-0"].entries["chest-20"] = { kg: "20" };
   assert.throws(() => normalize(d));
-  assert.throws(() => normalize({ version: 3, weeks: {}, sessions: {} }));
+  assert.throws(() => normalize({ version: 4, weeks: {}, sessions: {} }));
   d.sessions["1-0"].entries = { "chest-0": { kg: "-1" } };
   assert.throws(() => normalize(d));
 });
@@ -150,4 +150,48 @@ test("existing authentication retains signed expiry cookie and origin checks", (
     sameOrigin({ headers: { origin: "https://other.invalid" } }),
     false,
   );
+});
+
+test("rehabilitation entries survive concurrent merge with upper-body data", () => {
+  const base = normalize(old),
+    local = structuredClone(base),
+    remote = structuredClone(base);
+  local.sessions["1-0"].rehab = true;
+  local.sessions["1-0"].entries["balance-0"] = { seconds: "30", done: true };
+  remote.sessions["1-0"].entries["chest-0"].kg = "35";
+  const merged = merge(base, local, remote);
+  assert.equal(merged.conflicts.length, 0);
+  assert.equal(merged.data.sessions["1-0"].entries["balance-0"].seconds, "30");
+  assert.equal(merged.data.sessions["1-0"].entries["chest-0"].kg, "35");
+});
+test("old schema clients cannot overwrite rehabilitation records", async () => {
+  const { default: handler } = await import("../api/records.js");
+  process.env.FITNESS_ACCESS_HASH = createHash("sha256")
+    .update("test")
+    .digest("hex");
+  process.env.FITNESS_SESSION_SECRET = "test-only-secret";
+  const previous = process.env.BLOB_READ_WRITE_TOKEN;
+  process.env.BLOB_READ_WRITE_TOKEN = "test-placeholder-never-sent";
+  try {
+    const res = {
+      setHeader() {},
+      end(body) {
+        this.body = JSON.parse(body);
+      },
+    };
+    await handler(
+      {
+        method: "PUT",
+        headers: {
+          cookie: `${COOKIE}=${issueSession()}`,
+          "x-fitness-schema": "2",
+        },
+      },
+      res,
+    );
+    assert.equal(res.statusCode, 426);
+  } finally {
+    if (previous === undefined) delete process.env.BLOB_READ_WRITE_TOKEN;
+    else process.env.BLOB_READ_WRITE_TOKEN = previous;
+  }
 });

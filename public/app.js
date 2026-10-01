@@ -1,5 +1,10 @@
 import { empty, normalize, merge, MAX_SETS } from "./sync-core.js";
-import { DAYS, EXERCISES, prescription } from "./program.js";
+import {
+  DAYS,
+  EXERCISES,
+  prescription,
+  applyThreeSetSession,
+} from "./program.js";
 import { icon } from "./icons.js";
 const $ = (id) => document.getElementById(id),
   esc = (v) =>
@@ -117,6 +122,8 @@ function persist() {
   if (blocked) return false;
   try {
     data = normalize(data);
+    if (!demo && rawOriginal && !storage.getItem(KEY + "-backup-before-v3"))
+      storage.setItem(KEY + "-backup-before-v3", rawOriginal);
     if (!demo && rawOriginal && !storage.getItem(KEY + "-backup-before-v2")) {
       storage.setItem(KEY + "-backup-before-v2", rawOriginal);
       rawOriginal = null;
@@ -184,10 +191,14 @@ function prior(id) {
       ),
     }))[0];
 }
-const performance = (e) => `${e.kg ?? "—"} kg × ${e.reps ?? "—"} tekrar`;
+const performance = (e) =>
+  e.seconds !== undefined
+    ? `${e.seconds || "—"} saniye`
+    : `${e.kg ?? "—"} kg × ${e.reps ?? "—"} tekrar`;
 function renderExercise(r) {
   const s = session(),
-    ex = EXERCISES[r.id];
+    ex = EXERCISES[r.id],
+    targetLabel = `${r.lo === r.hi ? r.lo : r.lo + "-" + r.hi} ${ex.timed ? "saniye" : "tekrar"}`;
   if (s.alts?.[r.id] === "Bu hareketi çıkar")
     return `<div class="removed-exercise"><span>${ex.name} · Bu seanstan çıkarıldı</span><button class="text-button" data-restore="${r.id}">Hareketi geri ekle</button></div>`;
   const last = prior(r.id),
@@ -200,12 +211,12 @@ function renderExercise(r) {
         ek.startsWith(r.id + "-") && Number(ek.split("-").at(-1)) >= r.count,
     ),
     hasEntries = recorded(s).some(([ek]) => ek.startsWith(r.id + "-"));
-  return `<details class="exercise" id="exercise-${r.id}" data-exercise="${r.id}" ${ui.open.includes(r.id) ? "open" : ""}><summary class="exercise-summary"><span class="exercise-index">${String(r.index + 1).padStart(2, "0")}</span><span class="exercise-name"><h3>${esc(exerciseName(s, r.id))}</h3><small>${ex.group} <span>·</span> ${r.count} set × ${r.lo}-${r.hi} tekrar</small></span><span class="summary-count">${complete}/${r.count}</span><span class="chevron">${icon("chevron")}</span></summary><div class="exercise-body"><div class="exercise-info"><span class="target-tag">${r.lo}-${r.hi} tekrar</span><span>${r.rest} sn dinlenme</span><span>RIR ${ui.week === 1 ? "3-4" : "2-3"}</span></div><p class="previous-line">${last ? `<span>SON SEANS</span> ${esc(performance(last.entries[0][1]))} <small>· ${last.key.split("-")[0]}. hafta</small>` : "<span>İLK REFERANSIN</span> Bu hareket için tamamlanmış önceki set yok."}</p><div class="set-table" role="group" aria-label="${esc(exerciseName(s, r.id))} setleri"><div class="set-header"><span>SET</span><span>AĞIRLIK <small>kg</small></span><span>TEKRAR</span><span>RIR</span><span>TAMAM</span></div>${Array.from(
+  return `<details class="exercise" id="exercise-${r.id}" data-exercise="${r.id}" ${ui.open.includes(r.id) ? "open" : ""}><summary class="exercise-summary"><span class="exercise-index">${String(r.index + 1).padStart(2, "0")}</span><span class="exercise-name"><h3>${esc(exerciseName(s, r.id))}</h3><small>${ex.group} <span>·</span> ${r.count} set × ${targetLabel}</small></span><span class="summary-count">${complete}/${r.count}</span><span class="chevron">${icon("chevron")}</span></summary><div class="exercise-body"><div class="exercise-info"><span class="target-tag">${targetLabel}</span>${ex.rehab ? "<span>Hocanın Faz 2 planı · yük ve dinlenme kişisel</span>" : `<span>${r.rest} sn dinlenme</span><span>RIR ${ui.week === 1 ? "3-4" : "2-3"}</span>`}</div><p class="previous-line">${last ? `<span>SON SEANS</span> ${esc(performance(last.entries[0][1]))} <small>· ${last.key.split("-")[0]}. hafta</small>` : "<span>İLK REFERANSIN</span> Bu hareket için tamamlanmış önceki set yok."}</p><div class="set-table ${ex.timed ? "timed" : ""}" role="group" aria-label="${esc(exerciseName(s, r.id))} setleri"><div class="set-header"><span>SET</span><span>AĞIRLIK <small>kg</small></span><span>${ex.timed ? "SÜRE · sn" : "TEKRAR"}</span><span>${ex.timed ? "—" : "RIR"}</span><span>TAMAM</span></div>${Array.from(
     { length: r.count },
     (_, n) => {
       const ek = `${r.id}-${n}`,
         e = s.entries?.[ek] || {};
-      return `<div class="set-row ${e.done ? "is-done" : ""}" data-entry="${ek}"><span class="set-number">${String(n + 1).padStart(2, "0")}</span>${["kg", "reps", "rir"].map((f) => `<input type="number" inputmode="${f === "reps" ? "numeric" : "decimal"}" min="0" step="${f === "reps" ? "1" : "any"}" data-field="${f}" value="${esc(e[f])}" placeholder="—" aria-label="${esc(exerciseName(s, r.id))}, ${n + 1}. set ${f === "kg" ? "ağırlık (kg)" : f === "reps" ? "tekrar" : "RIR"}">`).join("")}<button class="done-button" data-done="${ek}" aria-label="${esc(exerciseName(s, r.id))}, ${n + 1}. set ${e.done ? "tamamlandı, geri al" : "tamamla"}" aria-pressed="${!!e.done}">${icon("check")}</button></div>`;
+      return `<div class="set-row ${e.done ? "is-done" : ""}" data-entry="${ek}"><span class="set-number">${String(n + 1).padStart(2, "0")}</span>${["kg", ex.timed ? "seconds" : "reps", "rir"].map((f) => `<input ${ex.timed && f !== "seconds" ? 'disabled aria-hidden="true" style="display:none"' : ""} type="number" inputmode="${f === "reps" ? "numeric" : "decimal"}" min="0" step="${f === "reps" ? "1" : "any"}" data-field="${f}" value="${esc(e[f])}" placeholder="—" aria-label="${esc(exerciseName(s, r.id))}, ${n + 1}. set ${f === "kg" ? "ağırlık (kg)" : f === "seconds" ? "süre (saniye)" : f === "reps" ? "tekrar" : "RIR"}">`).join("")}<button class="done-button" data-done="${ek}" aria-label="${esc(exerciseName(s, r.id))}, ${n + 1}. set ${e.done ? "tamamlandı, geri al" : "tamamla"}" aria-pressed="${!!e.done}">${icon("check")}</button></div>`;
     },
   ).join(
     "",
@@ -275,7 +286,11 @@ function renderTraining() {
     $(field).value = s[field] || "";
   for (const field of ["skipped", "warmup", "cooldown"])
     $(field).checked = !!s[field];
-  $("legacy-bike-label").hidden = !s.bike;
+  $("legacy-bike-label").hidden = false;
+  $("enable-rehab").textContent = s.rehab
+    ? "Faz 2 hareketleri bu seansta açık"
+    : "Bu seansa Faz 2 hareketlerini ekle ↗";
+  $("enable-rehab").disabled = !!s.rehab;
   updateProgress();
 }
 function renderProgram() {
@@ -290,7 +305,7 @@ function renderProgram() {
         )
           .map(
             (r) =>
-              `<li><span>${EXERCISES[r.id].name}</span><strong>${r.target} × ${r.lo}-${r.hi}</strong></li>`,
+              `<li><span>${esc(exerciseName(data.sessions[`${ui.week}-${i}`] || {}, r.id))}</span><strong>${r.count} × ${r.lo === r.hi ? r.lo : r.lo + "-" + r.hi}${EXERCISES[r.id].timed ? " sn" : ""}</strong></li>`,
           )
           .join(
             "",
@@ -305,7 +320,7 @@ function renderProgram() {
   $("physio").checked = !!session().physio;
   $("reduce").checked = !!session().reduce;
   $("program-rules").innerHTML =
-    `<div class="program-rule"><span>01</span><div><h3>Önce tekrar, sonra ağırlık.</h3><p>Bir hareketin tüm setlerinde üst tekrar sınırına, 2-3 RIR ve düzgün formla iki uygulama üst üste ulaştığında en küçük ağırlık artışını kullan. Artıştan sonra alt tekrar sınırını tamamlayamıyorsan önceki ağırlığa dön. Setleri artırırken ağırlığı artırma. ${ui.week === 1 ? "İlk hafta tüm hareketler 2 set, RIR 3-4." : "Sonraki haftalarda hedef RIR 2-3; set artışı toparlanma seçimine bağlı."}</p></div></div><div class="program-rule"><span>02</span><div><h3>Toparlanma da programın parçası.</h3><p>Cumartesi fizyoterapi seçeneği kol hareketlerini çıkarır ve ana hareketleri 2 sete indirir. Uzayan yorgunluk seçeneği her hareketten 1 set azaltır (en az 1). Belirgin yorgunlukta seansı atla; telafi seansı ekleme. Yorgunluk 48 saati aşıyorsa veya fizyoterapiyi etkiliyorsa sonraki seansta set azaltma seçeneğini kullan. Kayıtlar korunur.</p></div></div><div class="program-rule"><span>03</span><div><h3>Mevcut sınırlarına sadık.</h3><p>Bu blok üst gövde programıdır. Önceki bisiklet önerisi kaldırıldı; geçmiş bisiklet kayıtları korunur. Bacak ve rehabilitasyon planı bu uygulama tarafından değiştirilmez. Bacakla iterek yardım etme, ağırlığı savurma veya nefesini tutma. Yeni diz ağrısı, şişlik artışı veya topallamada belirtileri tetikleyen hareketi bırakıp fizyoterapistine bildir. Dambılları yerleştirmek veya sehpaya geçmek dizini zorluyorsa yardım al ya da makineyi tercih et.</p></div></div>`;
+    `<div class="program-rule"><span>01</span><div><h3>Önce tekrar, sonra ağırlık.</h3><p>Bir hareketin tüm setlerinde üst tekrar sınırına, 2-3 RIR ve düzgün formla iki uygulama üst üste ulaştığında en küçük ağırlık artışını kullan. Artıştan sonra alt tekrar sınırını tamamlayamıyorsan önceki ağırlığa dön. Setleri artırırken ağırlığı artırma. ${ui.week === 1 ? "İlk hafta tüm hareketler 2 set, RIR 3-4." : "Sonraki haftalarda hedef RIR 2-3; set artışı toparlanma seçimine bağlı."}</p></div></div><div class="program-rule"><span>02</span><div><h3>Toparlanma da programın parçası.</h3><p>Cumartesi fizyoterapi seçeneği kol hareketlerini çıkarır ve ana hareketleri 2 sete indirir. Uzayan yorgunluk seçeneği her hareketten 1 set azaltır (en az 1). Belirgin yorgunlukta seansı atla; telafi seansı ekleme. Yorgunluk 48 saati aşıyorsa veya fizyoterapiyi etkiliyorsa sonraki seansta set azaltma seçeneğini kullan. Kayıtlar korunur.</p></div></div><div class="program-rule"><span>03</span><div><h3>Mevcut sınırlarına sadık.</h3><p>Bu blok üst gövde programıdır. Faz 2 hareketleri seçilen seansa ayrıca eklenir; hocanın set ve tekrarları korunur. Bisiklet süresi seans notlarında kaydedilir. Üst gövde için fizyoterapi ve azaltma seçenekleri bacak setlerini otomatik değiştirmez. Bacakla iterek yardım etme, ağırlığı savurma veya nefesini tutma. Yeni diz ağrısı, şişlik artışı veya topallamada belirtileri tetikleyen hareketi bırakıp fizyoterapistine bildir. Dambılları yerleştirmek veya sehpaya geçmek dizini zorluyorsa yardım al ya da makineyi tercih et.</p></div></div>`;
 }
 function renderHistory() {
   const all = Object.entries(data.sessions).filter(
@@ -321,7 +336,9 @@ function renderHistory() {
     ),
     done = all.flatMap(([, s]) => recorded(s)).filter(([, e]) => e.done),
     volume = done.reduce(
-      (n, [, e]) => n + Number(e.kg || 0) * Number(e.reps || 0),
+      (n, [, e]) =>
+        n +
+        (e.seconds !== undefined ? 0 : Number(e.kg || 0) * Number(e.reps || 0)),
       0,
     );
   $("history-stats").innerHTML =
@@ -357,7 +374,7 @@ function renderHistory() {
             )
             .join(
               "",
-            )}</div>${s.note ? `<p class="history-note">${esc(s.note)}</p>` : ""}${s.next ? `<p class="history-note">Ertesi sabah: ${esc(s.next)}</p>` : ""}${s.bike ? `<p class="history-note">Geçmiş bisiklet kaydı: ${esc(s.bike)} dk</p>` : ""}</article>`;
+            )}</div>${s.note ? `<p class="history-note">${esc(s.note)}</p>` : ""}${s.next ? `<p class="history-note">Ertesi sabah: ${esc(s.next)}</p>` : ""}${s.bike ? `<p class="history-note">Bisiklet: ${esc(s.bike)} dk</p>` : ""}</article>`;
         })
         .join("")
     : `<div class="empty-state"><span class="empty-mark">/</span><p class="eyebrow">${all.length ? "BU FİLTREDE KAYIT YOK" : "HENÜZ BİR KAYIT YOK"}</p><h2>İlk set, ilk iz.</h2><p>Girdiğin setler burada görünür. Tamamlanmamış girişlerin de taslak olarak saklanır.</p><button class="primary" data-view="training">Antrenmana dön ↗</button></div>`;
@@ -458,6 +475,57 @@ function confirm(message) {
 document.addEventListener("click", async (e) => {
   const b = e.target.closest("button");
   if (!b) return;
+  if (b.id === "enable-rehab") {
+    if (blocked) return;
+    const ok = mutate((s) => {
+      s.rehab = true;
+    });
+    ui.open = ["legpress"];
+    saveUI();
+    render();
+    if (ok) toast("Faz 2 hareketleri bu seansa eklendi ve cihaza kaydedildi.");
+    return;
+  }
+  if (b.id === "apply-three-sets") {
+    if (blocked) return;
+    let applied = false;
+    const ok = mutate(() => {
+      applied = applyThreeSetSession(data, ui.week, ui.day);
+    });
+    render();
+    if (!applied)
+      toast(
+        "Bu seansta kayıt veya uyarlama var. Set +/− düğmeleriyle düzenle; geçmiş hareket adı korunur.",
+      );
+    else if (ok)
+      toast(
+        "3 set, ayakta lateral raise ve ayakta pushdown cihaza kaydedildi.",
+      );
+    return;
+  }
+  if (b.id === "rehab-note") {
+    if (blocked) return;
+    const marker = "Diz takibi (kişisel not):";
+    if (!(session().note || "").includes(marker)) {
+      const template =
+        "\n\n" +
+        marker +
+        "\nSeans öncesi ağrı (0–10): \nSeans sonrası ağrı (0–10): \nŞişlik / topallama: \nErtesi sabah yanıt: \nFizyoterapist önerisi: ";
+      if ((session().note || "").length + template.length > 5000) {
+        toast("Not alanı dolu. Mevcut notunu kısaltıp tekrar dene.");
+        return;
+      }
+      const ok = mutate((s) => {
+        s.note = (s.note || "") + template;
+      });
+      if (!ok) return;
+    }
+    showView("training");
+    renderTraining();
+    $("note").closest("details").open = true;
+    $("note").focus();
+    return;
+  }
   if (b.dataset.view) showView(b.dataset.view);
   if (b.hasAttribute("data-settings")) $("settings-dialog").showModal();
   if (b.dataset.close) $(b.dataset.close).close();
@@ -510,15 +578,18 @@ document.addEventListener("click", async (e) => {
       id = ek.replace(/-\d+$/, "");
     if (
       !entry.done &&
-      (!inputs[0].value ||
+      ((!EXERCISES[id]?.timed && !inputs[0].value) ||
         !inputs[1].value ||
         Number(inputs[1].value) < 1 ||
         inputs.some((i) => !i.validity.valid))
     ) {
       $("error-" + id).hidden = false;
-      $("error-" + id).textContent =
-        "Ağırlığı (0 olabilir) ve en az 1 tekrarı gir.";
-      inputs.find((i) => !i.value || !i.validity.valid)?.focus();
+      $("error-" + id).textContent = EXERCISES[id]?.timed
+        ? "En az 1 saniye gir."
+        : "Ağırlığı (0 olabilir) ve en az 1 tekrarı gir.";
+      inputs
+        .find((i) => !i.disabled && (!i.value || !i.validity.valid))
+        ?.focus();
       return;
     }
     const wasDone = !!entry.done;
@@ -573,7 +644,7 @@ $("exercise-list").addEventListener("input", (e) => {
     s.entries ??= {};
     s.entries[id] ??= {};
     s.entries[id][input.dataset.field] = input.value;
-    if (!input.value && ["kg", "reps"].includes(input.dataset.field))
+    if (!input.value && ["kg", "reps", "seconds"].includes(input.dataset.field))
       delete s.entries[id].done;
   });
   updateProgress();
