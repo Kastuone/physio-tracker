@@ -9,7 +9,10 @@ export default async function handler(req, res) {
     return reply(res, 405, { error: "Yöntem desteklenmiyor." });
   if (!process.env.BLOB_READ_WRITE_TOKEN)
     return reply(res, 503, { error: "Özel kayıt deposu henüz hazır değil." });
-  if (req.method === "PUT" && req.headers["x-fitness-schema"] !== "3")
+  if (
+    req.method === "PUT" &&
+    !["2", "3", "4"].includes(req.headers["x-fitness-schema"])
+  )
     return reply(res, 426, {
       error: "Uygulama güncellendi. Kayıtlarını korumak için sayfayı yenile.",
     });
@@ -58,7 +61,6 @@ export default async function handler(req, res) {
       });
     if (req.method === "PUT" && input?.etag === null)
       try {
-        // Handle a concurrent first writer without ever allowing a blind overwrite.
         const existing = await readRecordBlob();
         if (existing)
           return reply(res, 409, {

@@ -1,25 +1,33 @@
 <!doctype html>
-<html lang="tr">
+<html lang="tr" data-theme="dark">
   <head>
     <meta charset="utf-8" />
     <meta
       name="viewport"
       content="width=device-width,initial-scale=1,viewport-fit=cover"
     />
-    <meta name="theme-color" content="#f3f5f2" />
-    <title>Training Log | Antrenman günlüğün</title>
+    <meta name="theme-color" content="#09090b" id="meta-theme-color" />
+    <title>Training Log | ACL &amp; Güray Aydın Hipertrofi Sistemi</title>
     <meta
       name="description"
-      content="Programını takip et, setlerini kaydet, gelişimini gör. Kişisel antrenman günlüğün."
+      content="Ön çapraz bağ (ACL) rekonstrüksiyonu sonrası Güray Aydın Hipertrofi Sistemi ve 4 aşamalı sahaya dönüş antrenman günlüğü."
     />
     <meta name="robots" content="noindex,nofollow" />
     <link
       rel="icon"
-      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='8' fill='%232c5745'/%3E%3Ctext x='8' y='29' fill='white' font-size='28' font-family='sans-serif'%3E/%3C/text%3E%3C/svg%3E"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='8' fill='%2309090b' stroke='%23e11d48' stroke-width='3'/%3E%3Ctext x='9' y='29' fill='%23e11d48' font-size='28' font-weight='800' font-family='sans-serif'%3E/%3C/text%3E%3C/svg%3E"
     />
-    <link rel="stylesheet" href="/studio.css?v=2" />
+    <link rel="stylesheet" href="/studio.css?v=4" />
   </head>
-  <body>
+  <body data-day="0">
+    <!-- Subtle Day-Specific Fitness Background Stage -->
+    <div id="bg-stage" class="bg-stage" aria-hidden="true">
+      <div class="bg-layer bg-day-0"></div>
+      <div class="bg-layer bg-day-1"></div>
+      <div class="bg-layer bg-day-2"></div>
+      <div class="bg-vignette"></div>
+    </div>
+
     <a class="skip-link" href="#main">İçeriğe geç</a>
     <div id="demo-banner" hidden>
       ÖRNEK GÖRÜNÜM · Veriler kurgusaldır, kişisel kayıtlarına ve buluta
@@ -30,39 +38,53 @@
         ><span class="brand-mark" aria-hidden="true">/</span
         ><span>TRAINING<br />LOG<span class="brand-period">.</span></span></a
       >
-      <p class="sidebar-caption">Kişisel antrenman günlüğün</p>
+      <p class="sidebar-caption">ACL + Hipertrofi Performans Günlüğü</p>
       <nav class="main-nav" aria-label="Ana gezinme">
         <button data-view="training" aria-current="page">
           <span data-icon="barbell"></span><span>Antrenman</span
           ><span class="nav-arrow">↗</span>
         </button>
         <button data-view="program">
-          <span data-icon="calendar"></span><span>Program</span>
+          <span data-icon="calendar"></span><span>Program &amp; Aşamalar</span>
         </button>
         <button data-view="history">
           <span data-icon="chart"></span><span>Geçmiş</span>
         </button>
       </nav>
       <div class="sidebar-bottom">
-        <div class="block-number">04<span>HAFTALIK BLOK</span></div>
-        <p>Azar azar.<br />Düzenli olarak.</p>
+        <div class="block-number" id="sidebar-stage-num">
+          01<span>AKTİF AŞAMA (RTP)</span>
+        </div>
+        <p id="sidebar-stage-caption">
+          Eksantrik kontrol.<br />Maksimum hipertrofi.
+        </p>
         <button class="profile" data-settings>
-          <span class="avatar">TL</span
-          ><span>Benim günlüğüm<small>Hesap ve yedekler</small></span
+          <span class="avatar">TY</span
+          ><span>Tamer Yılmaz<small>Bulut eşitleme &amp; yedek</small></span
           ><span data-icon="settings"></span>
         </button>
       </div>
     </aside>
     <div class="workspace">
       <header class="topbar">
-        <a class="mobile-brand" href="#training">/ TRAINING LOG.</a
-        ><span id="breadcrumb">Günlüğüm <span>/</span> Antrenman</span>
+        <a class="mobile-brand" href="#training">/ TRAINING LOG.</a>
+        <span id="breadcrumb">Günlüğüm <span>/</span> Antrenman</span>
         <div class="top-actions">
+          <button
+            id="theme-toggle"
+            class="theme-toggle"
+            type="button"
+            aria-label="Koyu ve açık tema arasında geçiş yap"
+          >
+            <span id="theme-icon" data-icon="sun"></span>
+            <span id="theme-label">Açık tema</span>
+          </button>
           <button id="save-badge" class="save-badge" data-settings>
             <span class="status-dot"></span
-            ><span id="save-label">Yerel kayıt</span></button
-          ><button
-            class="icon-button"
+            ><span id="save-label">Yerel kayıt</span>
+          </button>
+          <button
+            class="icon-button settings-trigger"
             data-settings
             aria-label="Hesap ve ayarlar"
           >
@@ -75,92 +97,100 @@
         <section id="training-view" class="view">
           <div class="page-heading">
             <div>
-              <p class="eyebrow" id="session-kicker">1. HAFTA / SALI</p>
-              <h1 id="workout-title">Göğüs <span>& sırt.</span></h1>
+              <p class="eyebrow" id="session-kicker">
+                1. HAFTA (POST-OP 11. HF) / SALI
+              </p>
+              <h1 id="workout-title">
+                Ön Zincir <span>&amp; Üst İtiş.</span>
+              </h1>
               <p class="subtitle" id="workout-subtitle">
-                Bugünün odağı: kontrollü, iyi tekrarlar.
+                Sağ kuadriseps eksantrik kontrolü + Göğüs, Omuz ve Triceps hipertrofisi.
               </p>
             </div>
-            <label class="week-select"
-              ><span>Program haftası</span
-              ><select id="week" aria-label="Program haftası">
-                <option value="1">1. hafta</option>
-                <option value="2">2. hafta</option>
-                <option value="3">3. hafta</option>
-                <option value="4">4. hafta</option>
-              </select></label
-            >
+            <div class="week-controls">
+              <label class="week-select"
+                ><span>Program haftası</span
+                ><select id="week" aria-label="Program haftası">
+                  <option value="1">1. hafta</option>
+                  <option value="2">2. hafta</option>
+                  <option value="3">3. hafta</option>
+                  <option value="4">4. hafta</option>
+                </select></label
+              >
+              <button
+                type="button"
+                id="add-week"
+                class="add-week-btn"
+                title="Programa yeni hafta ekle"
+              >
+                <span data-icon="plus"></span><span>Hafta ekle</span>
+              </button>
+            </div>
           </div>
+
+          <!-- 4-Stage Return to Play Banner & Phase Transition Alert -->
+          <div id="stage-banner" class="stage-banner"></div>
+
           <nav class="day-tabs" id="day-tabs" aria-label="Antrenman günü"></nav>
           <div class="mobile-session">
-            <span id="mobile-progress">0 / 12 set</span
-            ><button class="text-button" id="mobile-start">
+            <span id="mobile-progress">0 / 33 set</span>
+            <button class="text-button" id="mobile-start">
               Antrenmana başla ↗
             </button>
           </div>
           <div class="training-layout">
             <div class="training-main">
-              <div class="section-line">
-                <h2>Hareketlerin</h2>
-                <span id="exercise-meta"></span>
-              </div>
-              <details class="session-notes">
-                <summary>Güncel rutinim · 3 set</summary>
-                <p>
-                  Boş seansı her harekette 3 set, ayakta lateral raise ve ayakta
-                  cable triceps pushdown ile hazırla. Tekrar aralıkları korunur;
-                  ağırlıkları kendin gir.
-                </p>
-                <button class="text-button" id="apply-three-sets">
-                  Bu boş seansı 3 setle hazırla ↗
-                </button>
-                <p class="small">
-                  Kayıtlı veya önceden uyarlanmış seans değişmez. Set +/− ile
-                  tek tek düzenleyebilirsin. Bu seçim fizyoterapi veya yorgunluk
-                  azaltması yerine kullanılmaz.
-                </p>
+              <!-- Mandatory 15-min Pre-Workout Neuromuscular Prep -->
+              <details class="warmup-card" id="warmup-protocol-card">
+                <summary class="warmup-summary">
+                  <div>
+                    <span class="warmup-tag">HER 3 GÜN ZORUNLU · 15 DK</span>
+                    <h2>Antrenman Öncesi Nöromüsküler Hazırlık</h2>
+                  </div>
+                  <span class="warmup-status" id="warmup-status-badge"
+                    >Hazırlık</span
+                  >
+                </summary>
+                <div class="warmup-body" id="warmup-protocol-list"></div>
               </details>
-              <div class="rehab-entry">
-                <button class="text-button" id="enable-rehab">
-                  Bu seansa Faz 2 hareketlerini ekle ↗
-                </button>
-                <p class="small">
-                  Leg press · Leg curl · Step-up · Bridge · Denge. Yükler boş
-                  başlar. Bacak hareketlerinde de set +/− kullanabilirsin.
-                </p>
+
+              <div class="section-line">
+                <h2>Çalışma Hareketlerin</h2>
+                <span id="exercise-meta"></span>
               </div>
               <div id="exercise-list" class="exercise-list"></div>
               <details class="session-notes">
                 <summary>
-                  Seans notları & toparlanma <span data-icon="plus"></span>
+                  Seans notları &amp; diz takibi <span data-icon="plus"></span>
                 </summary>
                 <div class="notes-grid">
-                  <label>Seans tarihi<input type="date" id="date" /></label
-                  ><label
-                    >Seans notu<textarea
-                      id="note"
-                      rows="3"
-                      maxlength="5000"
-                      placeholder="Bugün nasıl geçti?"
-                    ></textarea></label
-                  ><label
-                    >Ertesi sabah dizin<textarea
-                      id="next"
-                      rows="3"
-                      maxlength="5000"
-                      placeholder="Şişlik, sertlik veya yürüyüşte değişiklik..."
-                    ></textarea></label
-                  ><label id="legacy-bike-label" hidden
-                    >Bu seansın bisiklet süresi (dk)<input
+                  <label>Seans tarihi<input type="date" id="date" /></label>
+                  <label
+                    >Kondisyon bisikleti süresi (dk)<input
                       id="bike"
                       inputmode="decimal"
                       type="number"
                       min="0"
                       step="0.5"
+                      placeholder="10-12"
                     /><small
-                      >Geçmiş kayıt alanı; güncel egzersiz önerisi
-                      değildir.</small
+                      >Antrenman başı Seviye 4 yüksek kadans ısınma süresi.</small
                     ></label
+                  >
+                  <label
+                    >Seans ve sağ bacak titreme/kontrol notu<textarea
+                      id="note"
+                      rows="3"
+                      maxlength="5000"
+                      placeholder="Sağ bacak eksantrik kontrolü, üst gövde RIR/Failure durumu..."
+                    ></textarea></label
+                  ><label
+                    >Ertesi sabah diz durumu (efüzyon / sertlik)<textarea
+                      id="next"
+                      rows="3"
+                      maxlength="5000"
+                      placeholder="24 saati aşan şişlik, sıcaklık artışı veya sabah tutukluğu var mı?"
+                    ></textarea></label
                   ><label class="checkline"
                     ><input type="checkbox" id="skipped" />Bu seansı
                     atladım</label
@@ -168,7 +198,7 @@
                 </div>
               </details>
               <div class="session-end">
-                <span>Her tekrar, bir sonraki seans için referans.</span
+                <span>Her kontrollü tekrar, sahaya dönüş için bir adım.</span
                 ><button class="text-button" id="go-history">
                   Geçmişi gör <span aria-hidden="true">↗</span>
                 </button>
@@ -186,7 +216,7 @@
                     <circle id="ring-value" cx="80" cy="80" r="70" />
                   </svg>
                   <div>
-                    <strong id="done-count">0<span>/12</span></strong
+                    <strong id="done-count">0<span>/33</span></strong
                     ><span>SET TAMAMLANDI</span>
                   </div>
                 </div>
@@ -198,16 +228,16 @@
                 </button>
                 <div class="session-stats">
                   <div>
-                    <strong id="exercise-count">6</strong><span>hareket</span>
+                    <strong id="exercise-count">9</strong><span>hareket</span>
                   </div>
                   <div>
-                    <strong id="rir-target">3-4</strong><span>hedef RIR</span>
+                    <strong id="rir-target">RIR 1-2</strong><span>yoğunluk</span>
                   </div>
                 </div>
               </section>
               <section class="timer-panel">
                 <div class="section-line">
-                  <h2>Set arası</h2>
+                  <h2>Set arası dinlenme</h2>
                   <button
                     class="icon-button"
                     id="timer-reset"
@@ -234,25 +264,24 @@
                 </div>
               </section>
               <section class="prep-panel">
-                <h2>İyi bir başlangıç.</h2>
+                <h2>Seans Kontrol Listesi</h2>
                 <p>
-                  Omuz ve dirseklerini rahatça hareket ettir. İlk itiş ve
-                  çekişte hafif bir hazırlık seti yap.
+                  Ana hareketlerden önce kası yormadan eklemi hedef ağırlığa
+                  hazırlayan en az 2 kademeli ısınma seti uygula.
                 </p>
                 <label class="checkline"
-                  ><input type="checkbox" id="warmup" />Isınmam tamam</label
+                  ><input type="checkbox" id="warmup" />15 dk nöromüsküler
+                  hazırlık tamam</label
                 >
                 <details>
-                  <summary>Seans sonu</summary>
+                  <summary>Seans sonu &amp; toparlanma</summary>
                   <p>
-                    Supine Abdominal Bracing: bacakların rahat desteklenmişken
-                    karnını hafifçe sık, nefes almaya devam et; 3 × 5 yavaş
-                    nefes. Seated Chest Stretch ve Seated Cross-Body Shoulder
-                    Stretch: 2 × 20 saniye; ağrıya bastırmadan.
+                    Günlük 5g kreatin monohidrat, 3.5-4L su + elektrolit ve
+                    ~170-210g protein hedefini tamamla. Dizde ödem kontrolü yap.
                   </p>
                   <label class="checkline"
-                    ><input type="checkbox" id="cooldown" />Seans sonu
-                    tamam</label
+                    ><input type="checkbox" id="cooldown" />Seans sonu soğuma
+                    &amp; beslenme tamam</label
                   >
                 </details>
               </section>
@@ -262,125 +291,54 @@
         <section id="program-view" class="view" hidden>
           <div class="page-heading">
             <div>
-              <p class="eyebrow">4 HAFTA / 3 GÜN</p>
-              <h1>Planın <span>burada.</span></h1>
+              <p class="eyebrow" id="program-eyebrow">
+                3 GÜN (SALI · PERŞEMBE · CUMARTESİ) / 4 AŞAMALI PERİYODİZASYON
+              </p>
+              <h1>Entegre <span>Programın.</span></h1>
               <p class="subtitle">
-                Hareketler sabit. İlerlemen, kendi hızında.
+                Dr. Güray Aydın Hipertrofi Sistemi + Hamstring Otogrefti ACL
+                Rehabilitasyonu ve Mart Ayı Sahaya Dönüş Protokolü.
               </p>
             </div>
-            <button class="secondary" id="print">Yazdır / PDF</button>
+            <div class="button-row">
+              <button type="button" class="secondary" id="program-add-week">
+                + Yeni hafta ekle
+              </button>
+              <button class="secondary" id="print">Yazdır / PDF</button>
+            </div>
           </div>
           <div id="program-days"></div>
           <section class="adaptations">
-            <h2>Bu seansın uyarlamaları</h2>
+            <h2>Bu seansın otoregülasyon &amp; klinik uyarlamaları</h2>
             <p id="adaptation-context"></p>
             <label class="checkline" id="ready-wrap"
-              ><input type="checkbox" id="ready" />Toparlanma iyi; bu hafta
-              normal setlere geç</label
+              ><input type="checkbox" id="ready" />Bu hafta form ve diz
+              kontrolü tam; progresif yük/tekrar artışına hazır</label
             ><label class="checkline" id="physio-wrap"
-              ><input type="checkbox" id="physio" />Bu cumartesi fizyoterapim de
-              var</label
+              ><input type="checkbox" id="physio" />Eklem koruma / fizyoterapi
+              yoğunluğu: alt gövde ACL hareketlerinden 1 set düş</label
             ><label class="checkline"
-              ><input type="checkbox" id="reduce" />Uzayan yorgunluk: her
-              hareketten 1 set azalt</label
+              ><input type="checkbox" id="reduce" />Sistemik yorgunluk
+              otoregülasyonu: her hareketten 1 set azalt ve Failure setlerini
+              RIR 1-2'ye çek</label
             >
             <p class="small">
               Uyarlamalar ve seansa özel set sayıları geçmiş kayıtları silmez.
-              “Programdaki sayıya dön” ile özel set sayısını kaldırabilirsin.
+              Ertesi sabah dizde 24 saati aşan şişlik/sertlik olursa bir sonraki
+              seansta alt vücut çalışma ağırlıklarını %10-15 düşür.
             </p>
           </section>
-          <section class="rehab-reference" aria-labelledby="rehab-title">
-            <p class="eyebrow">HOCANIN LİSTESİ · FAZ 2</p>
-            <h2 id="rehab-title">Faz 2 / 6–12 hafta</h2>
-            <p>
-              Fotoğraftaki liste aşağıda. Haftanın dolması tek başına ilerleme
-              izni değildir. Yük, hareket aralığı ve haftalık sıklık tedavini
-              takip eden fizyoterapist veya cerrah tarafından
-              kişiselleştirilmeli.
-            </p>
-            <p>
-              <strong>Haftalık yerleşim taslağı:</strong> Salı · Perşembe ·
-              Cumartesi. Bu üç gün salon rutinine göre seçildi; klinik sıklık
-              önerisi değildir.
-            </p>
-            <dl class="rehab-list">
-              <div>
-                <dt>Leg press</dt>
-                <dd>3 × 12</dd>
-              </div>
-              <div>
-                <dt>Leg curl</dt>
-                <dd>
-                  3 × 12 · hamstring greftine uygun başlangıç zamanı ve yük
-                  teyit edilmeli
-                </dd>
-              </div>
-              <div>
-                <dt>Alçak basamak step-up</dt>
-                <dd>
-                  3 × 10 · basamak yüksekliği ve destek şekli belirtilmemiş
-                </dd>
-              </div>
-              <div>
-                <dt>Glute bridge</dt>
-                <dd>3 × 15 · tek/çift bacak belirtilmemiş</dd>
-              </div>
-              <div>
-                <dt>Tek ayak denge</dt>
-                <dd>3 × 30 saniye · zemin ve destek şekli belirtilmemiş</dd>
-              </div>
-              <div>
-                <dt>Bisiklet</dt>
-                <dd>
-                  Listede 15 dakika · günlük uygulama kullanıcı tercihi; direnç
-                  ve sıklık kişiselleştirilmeli
-                </dd>
-              </div>
-            </dl>
-            <p>
-              <strong>Koşu, zıplama ve ani yön değiştirme:</strong> hocanın
-              belgesinde yasak. Profesyonel sporcu videoları bu sınırları
-              değiştirmez. Antrenman ekranındaki “Faz 2 hareketlerini ekle”
-              düğmesi bu listeyi seçili seansa ekler. Kayıt alanının açık olması
-              klinik uygunluk onayı değildir.
-            </p>
-            <p class="small">
-              <a
-                href="https://www.youtube.com/watch?v=ittYoVE0p1w"
-                target="_blank"
-                rel="noopener noreferrer"
-                >Maddison videosu ↗</a
-              >
-              · İlham kaynağı; içeriği değerlendirilmedi, hareketleri programa
-              eklenmedi.
-            </p>
-            <button class="text-button" id="rehab-note">
-              Seans notuma diz takibi ekle ↗
-            </button>
-            <p class="small">
-              Ağrı, şişlik ve ertesi gün yanıtını kaydet. Bu notlar otomatik
-              egzersiz izni veya tanı üretmez. Artan şişlik, yeni ağrı veya
-              topallamada tetikleyen hareketi bırakıp fizyoterapistine danış.
-            </p>
-            <p class="small">
-              Araştırma:
-              <a
-                href="https://www.aspetar.com/en/professionals/aspetar-clinical-guidelines/recommendations-on-rehabilitation-after-aclr"
-                target="_blank"
-                rel="noopener noreferrer"
-                >Aspetar ACL rehabilitasyon rehberi ↗</a
-              >
-            </p>
-          </section>
+          <section id="stage-roadmap" class="stage-roadmap"></section>
           <div id="program-rules"></div>
         </section>
         <section id="history-view" class="view" hidden>
           <div class="page-heading">
             <div>
-              <p class="eyebrow">ANTRENMAN ARŞİVİ</p>
-              <h1>İlerlemen <span>iz bırakır.</span></h1>
+              <p class="eyebrow">ANTRENMAN ARŞİVİ &amp; ÖNCEKİ LOGLAR</p>
+              <h1>İlerlemen <span>kayıt altında.</span></h1>
               <p class="subtitle">
-                Son seansını hatırla. Bir sonraki seansına hazırlan.
+                Önceki blok kayıtların ve yeni ACL + Hipertrofi seansların tek
+                arşivde.
               </p>
             </div>
             <button class="secondary" id="export-history">Yedeği indir</button>
@@ -392,8 +350,9 @@
                 <option value="">Tüm hareketler</option>
               </select></label
             ><label
-              >Hafta<select id="history-week">
-                <option value="">Tüm haftalar</option>
+              >Dönem / Hafta<select id="history-week">
+                <option value="">Tüm dönemler</option>
+                <option value="H">Önceki Blok (Haziran - Eylül Arşivi)</option>
                 <option value="1">1. hafta</option>
                 <option value="2">2. hafta</option>
                 <option value="3">3. hafta</option>
@@ -405,7 +364,11 @@
         </section>
       </main>
       <footer class="page-footer">
-        <span>TRAINING LOG.</span><span>Kendi ritminde, kayıt altında.</span>
+        <span>/ TRAINING LOG.</span>
+        <span
+          >ACL Rekonstrüksiyonu + Güray Aydın Hipertrofi Sistemi · Sahaya
+          Dönüş</span
+        >
       </footer>
     </div>
     <dialog id="settings-dialog" aria-labelledby="settings-title">
@@ -484,6 +447,6 @@
     <noscript
       ><p>Set girişi ve eşitleme için JavaScript'i etkinleştir.</p></noscript
     >
-    <script type="module" src="/app.js?v=3"></script>
+    <script type="module" src="/app.js?v=4"></script>
   </body>
 </html>

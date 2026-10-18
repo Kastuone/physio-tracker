@@ -17,12 +17,6 @@ npm run dev
 
 Kişisel veri kullanmadan incelemek için `http://localhost:3000/?demo=1` adresini açın. Örnek görünüm kurgusal verileri ayrı **sessionStorage** anahtarlarında tutar ve buluta bağlanmaz. ZIP içindeki `preview.html` de sunucu gerektirmeyen, yalnızca örnek verili bir önizlemedir.
 
-## Program güncellemesi
-
-Boş bir seansı **Güncel rutinim → Bu boş seansı 3 setle hazırla** ile hazırlayabilirsiniz. Bu işlem tekrar aralıklarını korur, ağırlık uydurmaz, lateral raise ve cable triceps pushdown için ayakta varyantları seçer; baş üstü extension aynı hareket değildir. Kayıt veya uyarlama içeren seanslar topluca değiştirilmez. Set +/− her zamanki gibi kullanılabilir.
-
-Antrenman ekranındaki **Bu seansa Faz 2 hareketlerini ekle** düğmesi leg press 3×12, leg curl 3×12, step-up 3×10, bridge 3×15 ve denge 3×30 saniye kayıt alanlarını açar. Bu işlem yalnızca seçili seansı değiştirir; tıbbi uygunluk onayı oluşturmaz. Yük ve hareket açısı tahmin edilmez. Bisiklet süresi seans notlarında dakika olarak girilebilir. Seans notlarına ağrı, şişlik ve ertesi gün yanıtı için düzenlenebilir takip şablonu eklenebilir. Kaynak ve sınırlar: [Rehabilitasyon notları](docs/REHAB-NOTES.md).
-
 ## Özellikler
 
 - Dört haftalık mevcut program, üç antrenman günü ve mevcut toparlanma/fizyoterapi uyarlamaları.
@@ -52,15 +46,15 @@ Bu bir altyapı geçişi değildir. Mevcut Vercel projesini, bağlı **private**
 
 `FITNESS_ACCESS_HASH`, erişim kodunun SHA-256 hex özetidir. `FITNESS_SESSION_SECRET`, sunucudaki oturum imza anahtarıdır. Değerleri README'ye veya istemciye koymayın. Mevcut kurulumu güncellerken bunları yeniden üretmek gerekmez.
 
-Depo konumu **`fitness/records-v1.json`** olarak kalır. İsmin korunması mevcut kayıtlara aynı yerde erişmek içindir; iç veri şeması sürüm 3'e yükselmiştir.
+Depo konumu **`fitness/records-v1.json`** olarak kalır. İsmin korunması mevcut kayıtlara aynı yerde erişmek içindir; iç veri şeması sürüm 2'ye yükselmiştir.
 
 ## Veri koruma ve sürüm geçişi
 
 - `upper-body-4weeks-v1` yerel kayıt anahtarı korunur.
-- Sürüm 3 öncesi içerik ayrıca `upper-body-4weeks-v1-backup-before-v3` anahtarına yedeklenir. İlk yazmadan önce eski yerel içerik `upper-body-4weeks-v1-backup-before-v2` anahtarında korunur.
-- Sürüm 1 ve 2 yedekler sürüm 3'e okunur. Setler, notlar, tarihler, alternatifler, bisiklet geçmişi ve uyarlamalar korunur.
-- Sürüm 3, mevcut `setCounts` ve 20 set desteğine bacak hareketleri, seans `rehab` seçimi ve `seconds` süre alanını ekler. Eski istemcilerin bunları kırpmasını önlemek için PUT istekleri `X-Fitness-Schema: 3` ister.
-- Eski istemciye doğrudan geri dönmeyin: sürüm 3 kayıtlarını desteklemez. Geri dönüş gerekirse önce her iki cihazın ve bulutun güncel yedeğini alın; v3 destekleyen bir düzeltme yayınlayın.
+- İlk yazmadan önce eski yerel içerik `upper-body-4weeks-v1-backup-before-v2` anahtarında korunur.
+- Sürüm 1 yedekler sürüm 2'ye okunur. Setler, notlar, tarihler, alternatifler, bisiklet geçmişi ve uyarlamalar korunur.
+- Sürüm 2, `setCounts` alanını ve hareket başına 20 seti destekler. Eski istemcilerin bunları kırpmasını önlemek için PUT istekleri `X-Fitness-Schema: 2` ister.
+- Eski istemciye doğrudan geri dönmeyin: sürüm 2 kayıtlarını desteklemez. Geri dönüş gerekirse önce her iki cihazın ve bulutun güncel yedeğini alın; v2 destekleyen bir düzeltme yayınlayın.
 - Set azaltma, fizyoterapi ve yorgunluk seçenekleri set girişlerini silmez. Plan dışında kalan kayıtlar geçmişte ve yedeklerde durur.
 - Kayıt bulunan hareketin alternatif seçimi kilitlenir; böylece eski değerler başka bir harekete aitmiş gibi etiketlenmez. Girişleri boş olan harekette alternatif seçilebilir.
 - İçe aktarma öncesinde mevcut içerik `upper-body-4weeks-v1-before-import` anahtarında tutulur.
@@ -72,7 +66,7 @@ Eşitleme mevcut alan bazlı üç yönlü birleştirmeyi ve ETag koşullu yazmay
 
 ## Programın korunması
 
-Egzersizler ve temel set/tekrar planı `public/program.js` içindedir. Kullanıcının sağladığı Faz 2 listesi aktarılmıştır; ek klinik reçete üretilmez. Bisiklet yasağına dair önceki ifade düzeltilmiştir; girilmiş süreler korunur. İlk hafta 2 set / 3–4 RIR; diğer haftaların mevcut toparlanma seçimi, fizyoterapi ve yorgunluk kuralları sürer.
+Egzersizler ve temel set/tekrar planı `public/program.js` içindedir. Yeni bacak veya rehabilitasyon reçetesi eklenmedi. Önceki konuşmada belirtilen bisiklet kısıtlamasına göre eski bisiklet önerisi kaldırıldı; girilmiş bisiklet süreleri korunur. İlk hafta 2 set / 3–4 RIR; diğer haftaların mevcut toparlanma seçimi, fizyoterapi ve yorgunluk kuralları sürer.
 
 ## Doğrulama
 

@@ -1,234 +1,809 @@
-// Exercise prescription preserved from the existing tracker.
+// Integrated ACL Reconstruction (Hamstring Autograft) + Dr. Güray Aydın Hypertrophy System
+// 3-Day Hybrid Periodization (Tuesday / Thursday / Saturday) with 4-Stage Return to Play (RTP).
+
+export const WARMUP_PROTOCOL = {
+  title: "Antrenman Öncesi Standart Nöromüsküler Hazırlık",
+  subtitle: "Her 3 gün zorunlu · 15 dakika · Kıkırdak yağlanması ve artrojenik kas inhibisyonunu kırma",
+  items: [
+    {
+      id: "warmup_bike",
+      name: "Kondisyon Bisikleti (Seviye 4 Direnç, Yüksek Kadans)",
+      prescription: "10-12 dk",
+      detail: "Eklem içi sinovyal sıvı difüzyonu ve dokuyu ısıtmak için yüksek kadansla akıcı çevir.",
+    },
+    {
+      id: "warmup_slr",
+      name: "Ayak Bileği Ağırlıklı Düz Bacak Kaldırma (SLR - 3 kg)",
+      prescription: "2 × 12 tekrar",
+      detail: "Minderde ayak bileğinde 3 kg ağırlıkla; tepe noktada 2 saniye tam kuadriseps kilitlemeli.",
+    },
+    {
+      id: "warmup_bridge",
+      name: "Çift / Tek Bacak Kalça Köprüsü (Glute Bridge)",
+      prescription: "2 × 15 sn tutuş",
+      detail: "Posterior zinciri ve kalça stabilizatörlerini ana alt vücut bloğu öncesi ateşle.",
+    },
+  ],
+};
+
 export const EXERCISES = {
-  legpress: {
-    name: "Leg Press",
-    short: "Leg Press",
-    group: "Faz 2 · Bacak",
-    alt: [],
-    rehab: true,
-    note: "Hocanın planı: 3 × 12. Yük ve diz açısı belirtilmedi; fizyoterapistinle belirle. Ağrılı son açıyı zorlamadan çalış.",
+  // SALI (GÜN A)
+  leg_press_ecc: {
+    name: "Unilateral / Eksantrik Leg Press",
+    short: "Eksantrik Leg Press",
+    trHint: "Tek Bacak / 2 İt - 1 İndir Bacak Pres",
+    group: "Kuadriseps & Kalça (ACL CKC)",
+    category: "acl",
+    rir: "RIR 2",
+    tempo: "3 sn İniş - 1 sn İtiş",
+    rest: "90",
+    alt: [
+      "Horizontal Single-Leg Press (0°-90°)",
+      "2. Aşama: Barbell Back Squat (0°-90° Kontrollü)",
+      "Bu hareketi çıkar",
+    ],
+    note: "0°-90° hareket açıklığı. İlk 2 set '2 ayakla it, sağ ayakla 3 saniyede indir'; son 2 set tamamen sağ bacak izole (titremeyi kontrol ederek, diz kapağı 2. ayak parmağı hizasında).",
   },
-  legcurl: {
-    name: "Leg Curl",
-    short: "Leg Curl",
-    group: "Faz 2 · Bacak",
-    alt: [],
-    rehab: true,
-    note: "Hocanın planı: 3 × 12. Hamstring greftine uygun yük ve hareket aralığını tedavi ekibinle netleştir. Bu kayıt alanı klinik onay değildir.",
+  step_up: {
+    name: "Kontrollü Lateral / Forward Step-Up",
+    short: "Lateral / Forward Step-Up",
+    trHint: "Kutuya Kontrollü Çıkış ve 3 sn İniş (Her Bacak)",
+    group: "Kuadriseps & Gluteus Medius (ACL)",
+    category: "acl",
+    rir: "RIR 2",
+    tempo: "2 sn Çıkış - 3 sn İniş",
+    rest: "90",
+    perLeg: true,
+    alt: [
+      "Forward Step-Up (15-25 cm Kutu)",
+      "2. Aşama: Rearfoot-Elevated Split Squat (Bulgar Squat)",
+      "3. Aşama: Resisted Walking Lunge / Sled Push",
+      "Bu hareketi çıkar",
+    ],
+    note: "Sağ ayak kutu üzerinde sabit. Çıkışta gövdeyi savurmadan kalça ve kuadriseps ile yüksel; inişte 3 saniyede dizin içe çökmesini (valgus) engelleyerek yavaşça yere temas et.",
   },
-  stepup: {
-    name: "Alçak Basamak Step-up",
-    short: "Step-up",
-    group: "Faz 2 · Bacak",
-    alt: [],
-    rehab: true,
-    note: "Hocanın planı: 3 × 10. Basamak yüksekliği ve hangi tarafın çalışacağı belirtilmedi; hocanla netleştir, tarafı seans notuna yaz. Ek ağırlık yoksa 0 kg gir.",
+  leg_curl_21: {
+    name: "Seated Leg Curl (2-1 Tekniği)",
+    short: "Seated Leg Curl (2-1)",
+    trHint: "Oturarak Arka Bacak Bükme (Çift Çek - Sağ Sal)",
+    group: "Hamstring (ACL Dinamik Koruyucu)",
+    category: "acl",
+    rir: "RIR 1-2",
+    tempo: "1 sn Çekiş - 3 sn Açılış",
+    rest: "90",
+    alt: [
+      "Lying Leg Curl (2-1 Eksantrik)",
+      "2. Aşama: Destekli Nordic Hamstring Curl",
+      "Bu hareketi çıkar",
+    ],
+    note: "Hamstring otogrefti rejenerasyonu için kritik. Çift bacakla çekip, açılış (eksantrik) fazını 3 saniyede yavaşlatarak tendona binen gerilimi kontrollü artır.",
   },
-  bridge: {
-    name: "Glute Bridge",
-    short: "Glute Bridge",
-    group: "Faz 2 · Bacak",
-    alt: [],
-    rehab: true,
-    note: "Hocanın planı: 3 × 15. Tek/çift bacak ayrımı belirtilmedi; videodan yeni varyant ekleme. Ek ağırlık yoksa 0 kg gir.",
+  hip_abductor: {
+    name: "Hip Abductor Machine",
+    short: "Hip Abductor",
+    trHint: "Oturarak Bacak Dışa Açış Makinesi (Yan Kalça)",
+    group: "Gluteus Medius (Pelvik Stabilite)",
+    category: "acl",
+    rir: "RIR 1",
+    tempo: "2 sn Açış - 2 sn Kapanış",
+    rest: "60",
+    alt: ["Bantlı Clamshell / Monster Walk", "Bu hareketi çıkar"],
+    note: "Dizin içe kaçmasını önleyen yan kalça zırhı. Not: Hamstring/gracilis grefti nedeniyle Adductor (içe kapatma) makinesi kesinlikle yapılmayacaktır.",
   },
-  balance: {
-    name: "Tek Ayak Denge",
-    short: "Tek Ayak Denge",
-    group: "Faz 2 · Denge",
-    alt: [],
-    rehab: true,
-    timed: true,
-    note: "Hocanın planı: 3 × 30 saniye. Süreyi saniye olarak kaydet. Taraf, zemin ve destek şeklini hocanla netleştir; bunları seans notuna yaz.",
+  incline_db_press: {
+    name: "Incline Dumbbell Press",
+    short: "Incline DB Press",
+    trHint: "Eğimli Sehpada (30-45°) Dambıl Göğüs İtiş",
+    group: "Üst Göğüs (Hipertrofi Ana İtiş)",
+    category: "upper",
+    rir: "RIR 1-2",
+    tempo: "Kontrollü",
+    rest: "120",
+    legacyId: "chest",
+    alt: ["Incline Plate-Loaded Machine Press", "Incline Smith Machine Press"],
+    note: "Güray Aydın PPL standardı. Ayakları yere basıp dizden kuvvet alma (leg drive) yapmadan, sırtı sehpaya kilitleyerek ağır mekanik gerilim.",
+  },
+  cable_cross_fly: {
+    name: "Seated Cable Cross / Pec Deck Fly",
+    short: "Cable Cross / Pec Deck",
+    trHint: "Oturarak Kablo Sıkıştırma / Kelebek Makinesi",
+    group: "Göğüs İzolasyon",
+    category: "upper",
+    rir: "Failure",
+    tempo: "Tepe noktada 1 sn sıkma",
+    rest: "75",
+    legacyId: "fly",
+    alt: ["Pec Deck Fly Machine", "Seated Cable Chest Fly"],
+    note: "Oturarak icra edilir; son tekrarda formu bozmadan tam tükenişe (Failure) gidilir.",
+  },
+  seated_ohp: {
+    name: "Seated Dumbbell / Machine Overhead Press",
+    short: "Seated Overhead Press",
+    trHint: "90° Sırt Destekli Oturarak Dambıl / Makine Omuz İtiş",
+    group: "Ön ve Yan Omuz",
+    category: "upper",
+    rir: "RIR 1-2",
+    tempo: "Kontrollü",
+    rest: "90",
+    legacyId: "shoulder",
+    alt: ["Seated Machine Shoulder Press", "Seated Dumbbell Shoulder Press"],
+    note: "Omurgaya ve dize dikey yük bindirmemek için 90 derece sırt destekli sehpada oturarak uygulanır.",
+  },
+  seated_lat_raise: {
+    name: "Seated Dumbbell Lateral Raise",
+    short: "Seated Lateral Raise",
+    trHint: "Oturarak Dambıl Yana Açış (Yan Omuz)",
+    group: "Yan Omuz",
+    category: "upper",
+    rir: "Beyond Failure",
+    tempo: "Akıcı",
+    rest: "60",
+    legacyId: "lateral",
+    alt: ["Seated Machine Lateral Raise"],
+    note: "Son sette tükenişe ulaştıktan sonra yarım tekrarlarla (partial reps) yanma hissi maksimuma çıkarılır.",
+  },
+  rope_pushdown: {
+    name: "Seated Cable Rope Triceps Pushdown",
+    short: "Rope Triceps Pushdown",
+    trHint: "Oturarak Halatla Kablo Arka Kol İtiş",
+    group: "Triceps (Arka Kol)",
+    category: "upper",
+    rir: "Failure",
+    tempo: "Dirsekler sabit",
+    rest: "75",
+    legacyId: "triceps",
+    alt: ["Seated V-Bar Triceps Pushdown", "Triceps Extension Machine", "Bu hareketi çıkar"],
+    note: "İstasyonun önüne düz sehpa çekilerek oturulur; gövde salınımı olmadan tam tükeniş hedeflenir.",
   },
 
+  // PERŞEMBE (GÜN B)
+  db_rdl: {
+    name: "Dumbbell Romanian Deadlift (RDL - Hafif/Orta)",
+    short: "Dumbbell RDL",
+    trHint: "Dambıl Romen Deadlift (Kalça Geriye İtiş - Hip Hinge)",
+    group: "Hamstring & Glute (ACL Faz 3-4 Geçişi)",
+    category: "acl",
+    rir: "RIR 2-3",
+    tempo: "3 sn İniş - 1 sn Kalkış",
+    rest: "90",
+    alt: [
+      "Cable Pull-Through (Hip Hinge)",
+      "2. Aşama: Barbell / Trap-Bar RDL",
+      "Bu hareketi çıkar",
+    ],
+    note: "12. hafta geçiş hareketi. Dizler 15-20° hafif bükülü ve sabit; hareket tamamen kalçayı geriye iterek (hip hinge) yapılır. Hamstring greft hattında keskin çekme olmayacak bir ağırlık seçilir.",
+  },
+  uni_leg_curl: {
+    name: "Lying / Seated Unilateral Leg Curl",
+    short: "Unilateral Leg Curl",
+    trHint: "Tek Bacak Arka Bacak Bükme (Sağ Bacak Referanslı)",
+    group: "Hamstring İzolasyon",
+    category: "acl",
+    rir: "RIR 1-2",
+    tempo: "2 sn Çekiş - 3 sn İniş",
+    rest: "90",
+    alt: [
+      "Seated Unilateral Leg Curl",
+      "Lying Unilateral Leg Curl",
+      "2. Aşama: Nordic Hamstring Curl",
+      "Bu hareketi çıkar",
+    ],
+    note: "Sağ ve sol bacak ayrı ayrı çalışılır; zayıf olan sağ bacağın tekrar ve ağırlık kapasitesi referans alınır, sol bacakla daha fazla tekrar yapılmaz.",
+  },
+  ecc_step_down: {
+    name: "Eksantrik Step-Down (Basamaktan İniş)",
+    short: "Eksantrik Step-Down",
+    trHint: "15-20 cm Basamaktan 3 Saniyede Kontrollü Frenleme İnişi",
+    group: "Kuadriseps Frenleme Mekanizması",
+    category: "acl",
+    rir: "RIR 2",
+    tempo: "3 sn İniş - 1 sn Çıkış",
+    rest: "90",
+    perLeg: true,
+    alt: [
+      "Forward Heel-Tap Step-Down (15-20 cm)",
+      "12. Hafta+: Kısıtlı Açı (90°-45°) Leg Extension",
+      "3. Aşama: Single-Leg Hurdle Hop & Deceleration",
+      "Bu hareketi çıkar",
+    ],
+    note: "15-20 cm'lik step tahtası üzerinde sağ ayakla durulur; sol topuk yere hafifçe değene kadar 3 saniyede inilir ve tekrar kalkılır. Sahadaki yavaşlama (deceleration) mekaniğinin temelidir.",
+  },
+  single_calf_raise: {
+    name: "Single-Leg Calf Raise (Destekli)",
+    short: "Single-Leg Calf Raise",
+    trHint: "Destekli Tek Ayak Parmak Ucu Yükselme (Kalf & Aşil)",
+    group: "Gastrocnemius & Soleus",
+    category: "acl",
+    rir: "Failure",
+    tempo: "Tepe ve dipte 1 sn",
+    rest: "60",
+    alt: ["Seated Calf Raise Machine (Unilateral)", "Bu hareketi çıkar"],
+    note: "Koşuya dönüş kriteri olan tek ayakla 20 nizami tekrar hedefine yönelik kalf ve aşil tendonu güçlendirmesi.",
+  },
+  wide_lat_pulldown: {
+    name: "Wide-Grip Lat Pulldown",
+    short: "Wide-Grip Lat Pulldown",
+    trHint: "Geniş Tutuş Göğse Çekiş (Sırt Genişliği / Kanat)",
+    group: "Sırt Genişliği (Latissimus Dorsi)",
+    category: "upper",
+    rir: "RIR 1-2 (Son set Failure)",
+    tempo: "2 sn İniş - 1 sn Çekiş",
+    rest: "90",
+    legacyId: "lat",
+    alt: ["Neutral-Grip Lat Pulldown", "Iso-Lateral High Row Machine"],
+    note: "Güray Aydın Cumartesi çekiş standardı. Diz pedlerinin ameliyatlı bacağı rahatsız etmediği konforlu bir yükseklik ayarlanır.",
+  },
+  supported_row: {
+    name: "Chest-Supported Row / Seated Cable Row",
+    short: "Chest-Supported Row",
+    trHint: "Göğüs Destekli Makine Çekiş / Oturarak Kablo Kürek",
+    group: "Orta Sırt & Trapez",
+    category: "upper",
+    rir: "Failure",
+    tempo: "Kürek kemikleri tam sıkma",
+    rest: "90",
+    legacyId: "row",
+    alt: ["Incline Bench Chest-Supported Dumbbell Row", "Seated Cable Row (Geniş Tutuş)"],
+    note: "Göğüs destekli makine veya oturarak kablo çekişi tercih edilerek bel ve diz üzerindeki izometrik yük sıfırlanır.",
+  },
+  rope_pullover: {
+    name: "Seated Rope Pullover / Straight-Arm Pulldown",
+    short: "Seated Rope Pullover",
+    trHint: "Oturarak Halatla Düz Kol Kanat İndirme (Lat İzolasyon)",
+    group: "Lat İzolasyon",
+    category: "upper",
+    rir: "Failure",
+    tempo: "Kontrollü esneme",
+    rest: "60",
+    alt: ["Straight-Arm Bar Pulldown (Oturarak)", "Machine Pullover"],
+    note: "Sırt kaslarını biceps yardımı olmadan izole olarak tüketmek için diz üstü veya oturarak uygulanır.",
+  },
+  reverse_pec_deck: {
+    name: "Reverse Pec Deck / Seated Face Pull",
+    short: "Reverse Pec Deck",
+    trHint: "Ters Kelebek Makinesi / Oturarak Yüze Halat Çekiş",
+    group: "Arka Omuz & Üst Sırt",
+    category: "upper",
+    rir: "Beyond Failure",
+    tempo: "Akıcı",
+    rest: "60",
+    legacyId: "reverse",
+    alt: ["Seated Rope Face Pull", "Incline Chest-Supported Rear Delt Fly"],
+    note: "Omuz sağlığı ve postür için tükeniş ötesi (kısmi tekrarlarla) uygulanır.",
+  },
+  preacher_curl: {
+    name: "Machine Preacher Curl (Masada Biceps)",
+    short: "Machine Preacher Curl",
+    trHint: "Scott Sehpasında / Masada Makine Ön Kol Bükme",
+    group: "Biceps Brachii",
+    category: "upper",
+    rir: "RIR 1 / Failure",
+    tempo: "2 sn İniş",
+    rest: "75",
+    legacyId: "preacher",
+    alt: ["EZ-Bar Preacher Curl", "Seated Dumbbell Curl"],
+    note: "Tekrar eden hareketlerden kaçınmak ve dize sıfır yük bindirmek adına dirsekleri sehpaya kilitleyen Preacher Curl tercih edilir.",
+  },
+
+  // CUMARTESİ (GÜN C)
+  goblet_box_squat: {
+    name: "Goblet Box Squat (0°–90° Kutu/Sehpa Hedefli)",
+    short: "Goblet Box Squat (0°-90°)",
+    trHint: "Göğüste Dambıl ile 90° Kutuya Dokunup Kalkma",
+    group: "Kuadriseps & Kalça Koordinasyonu",
+    category: "acl",
+    rir: "RIR 2",
+    tempo: "3 sn İniş - 1 sn Kalkış",
+    rest: "90",
+    alt: [
+      "2. Aşama: Barbell Box Squat (0°-90°)",
+      "2. Aşama: Rearfoot-Elevated Split Squat (Bulgar Squat)",
+      "Bu hareketi çıkar",
+    ],
+    note: "Arkaya dizin 90 derece büküldüğü yüksekliğe bir sehpa/kutu konur. Göğüste dambıl ile ağırlık iki bacağa eşit dağıtılarak (sağ ayağın yerden itişine odaklanarak) kutuya dokunup kalkılır.",
+  },
+  chair_bridge: {
+    name: "Single-Leg Hamstring Chair Bridge",
+    short: "Single-Leg Chair Bridge",
+    trHint: "Topuk Sehpada Tek Bacak Arka Bacak Köprüsü",
+    group: "Hamstring & Glute Dayanıklılığı",
+    category: "acl",
+    rir: "RIR 1-2",
+    tempo: "2 sn Tutuşlu",
+    rest: "75",
+    perLeg: true,
+    alt: ["Bilateral Straight-Leg Bridge (2-1 Geçişli)", "Swiss Ball Hamstring Curl"],
+    note: "Topuk yüksek bir sehpa/sandalye üzerinde, diz hafif bükülü; kalçayı yukarı kaldırıp indirme. Koşuya dönüşteki 20 tekrar testinin doğrudan hazırlığıdır.",
+  },
+  iso_leg_press: {
+    name: "Leg Press (Sadece Sağ Bacak İzole)",
+    short: "Sağ Bacak İzole Leg Press",
+    trHint: "Yalnızca Ameliyatlı Sağ Bacakla Kesintisiz Piston İtiş",
+    group: "Kuadriseps Asimetri Kapatma",
+    category: "acl",
+    rir: "RIR 2",
+    tempo: "Akıcı ve kontrollü",
+    rest: "90",
+    alt: ["12. Hafta+: Unilateral Leg Extension (90°-45° Kısıtlı Açı)", "Bu hareketi çıkar"],
+    note: "Çift bacak yerine yalnızca sağ bacakla (15-20 kg bandında) kesintisiz, titremesiz piston gibi itiş pratiği.",
+  },
+  balance_side_plank: {
+    name: "Single-Leg Balance + Core (Side Plank)",
+    short: "Tek Ayak Denge + Side Plank",
+    trHint: "Sağ Ayak 30 sn Sabit Denge + Sağ/Sol 30 sn Yan Plank",
+    group: "Propriyosepsiyon & Gövde Stabilitesi",
+    category: "acl",
+    rir: "30 sn Tutuş",
+    tempo: "30 sn Tutuş",
+    rest: "45",
+    unitLabel: "sn",
+    alt: ["BOSU / Gözler Yarı Kapalı Tek Ayak Denge + Side Plank"],
+    note: "Sağ ayak üzerinde 30 saniye sabit denge (gözler açık, kollar göğüste bağlı) + hemen ardından her iki taraf için 30 saniye Side Plank. Tekrar alanına tutuş süresini (ör. 30 sn) gir.",
+  },
+  flat_chest_press: {
+    name: "Flat Machine Chest Press / Dumbbell Press",
+    short: "Flat Chest Press",
+    trHint: "Düz Makine Göğüs İtiş / Düz Sehpa Dambıl Pres",
+    group: "Göğüs Genel Kütle",
+    category: "upper",
+    rir: "RIR 1-2",
+    tempo: "Kontrollü",
+    rest: "90",
+    legacyId: "chest",
+    alt: ["Seated Machine Chest Press", "Flat Dumbbell Bench Press"],
+    note: "Plaka yüklemeli makine veya düz sehpada dambıl pres (ayaklar yerde pasif, dizden kuvvet alma yok).",
+  },
+  close_pulldown: {
+    name: "Close-Grip / Neutral-Grip Pulldown",
+    short: "Close-Grip Pulldown",
+    trHint: "Dar / V-Bar Nötr Tutuş Göğse Çekiş",
+    group: "Sırt Kalınlığı & Alt Lat",
+    category: "upper",
+    rir: "Failure",
+    tempo: "Kontrollü",
+    rest: "90",
+    legacyId: "lat",
+    alt: ["Underhand (Ters Tutuş) Lat Pulldown", "Chest-Supported Machine Row"],
+    note: "Göğsü aşırı uyarmadan sırtın alt liflerini hedefleyen çekiş varyasyonu.",
+  },
+  cable_lat_raise: {
+    name: "Cable Lateral Raise",
+    short: "Cable Lateral Raise",
+    trHint: "Kablo İstasyonunda Tek Kol Yana Açış (Sabit Gerilim)",
+    group: "Yan Omuz",
+    category: "upper",
+    rir: "Beyond Failure",
+    tempo: "Sabit gerilim",
+    rest: "60",
+    legacyId: "lateral",
+    alt: ["Seated Dumbbell Lateral Raise"],
+    note: "Kablonun sağladığı kesintisiz gerilimle yan omuzda maksimum metabolik stres.",
+  },
+  arm_superset: {
+    name: "Incline Dumbbell Curl + Overhead Triceps Ext.",
+    short: "Kol Süperseti (Curl + Ext.)",
+    trHint: "Eğimli Sehpa Biceps Curl + Baş Üstü Triceps Uzatma Süperseti",
+    group: "Kol Süperseti (Biceps & Triceps)",
+    category: "upper",
+    rir: "Failure",
+    tempo: "Süperset",
+    rest: "75",
+    legacyId: "preacher",
+    alt: ["Seated Hammer Curl + Cable Overhead Rope Extension"],
+    note: "Oturarak geriye yaslanıp bicepsin uzun başını ve tricepsin uzun başını aynı anda hedefleyen zaman tasarruflu kol bloğu.",
+  },
+
+  // Legacy exercise IDs retained so historical sessions display with full metadata
   chest: {
     name: "Seated Machine Chest Press",
-    short: "Chest Press",
+    short: "Chest Press (Arşiv)",
+    trHint: "Oturarak Makine Göğüs İtiş",
     group: "Göğüs",
+    category: "upper",
+    rir: "RIR 1-2",
+    tempo: "Kontrollü",
+    rest: "90",
     alt: ["Dumbbell Bench Press"],
   },
   row: {
     name: "Chest-Supported Machine Row",
-    short: "Supported Row",
+    short: "Supported Row (Arşiv)",
+    trHint: "Göğüs Destekli Makine Sırt Çekiş",
     group: "Sırt",
+    category: "upper",
+    rir: "RIR 1-2",
+    tempo: "Kontrollü",
+    rest: "90",
     alt: ["Incline Bench Chest-Supported Dumbbell Row"],
   },
   lat: {
     name: "Lat Pulldown",
-    short: "Lat Pulldown",
+    short: "Lat Pulldown (Arşiv)",
+    trHint: "Göğse Çekiş (Kanat)",
     group: "Sırt",
+    category: "upper",
+    rir: "RIR 1-2",
+    tempo: "Kontrollü",
+    rest: "90",
     alt: ["Chest-Supported Machine Row"],
-    note: "Barı önüne çek. Row alternatifi dikey çekişin birebir karşılığı değildir.",
   },
   lateral: {
     name: "Seated Dumbbell Lateral Raise",
-    short: "Lateral Raise",
+    short: "Lateral Raise (Arşiv)",
+    trHint: "Oturarak Dambıl Yana Açış",
     group: "Omuz",
-    alt: ["Standing Dumbbell Lateral Raise"],
-    note: "Ayakta varyantta gövdeyi savurma; dizinden destek alarak ağırlığı itme.",
+    category: "upper",
+    rir: "RIR 1",
+    tempo: "Akıcı",
+    rest: "60",
+    alt: [],
   },
   preacher: {
     name: "Preacher Curl",
-    short: "Preacher Curl",
+    short: "Preacher Curl (Arşiv)",
+    trHint: "Masada Biceps Bükme",
     group: "Biceps",
+    category: "upper",
+    rir: "RIR 1",
+    tempo: "Kontrollü",
+    rest: "60",
     alt: ["Seated Dumbbell Curl"],
   },
   triceps: {
     name: "Seated Cable Triceps Pushdown",
-    short: "Triceps Pushdown",
+    short: "Triceps Pushdown (Arşiv)",
+    trHint: "Oturarak Kablo Arka Kol İtiş",
     group: "Triceps",
-    alt: [
-      "Standing Cable Triceps Pushdown",
-      "Triceps Extension Machine",
-      "Bu hareketi çıkar",
-    ],
-    note: "Oturarak veya ayakta cable pushdown seçebilirsin. Ayakta gövdeyi sabit tut; bacakla itme. Baş üstü triceps extension ayrı bir harekettir.",
+    category: "upper",
+    rir: "RIR 1",
+    tempo: "Kontrollü",
+    rest: "60",
+    alt: ["Triceps Extension Machine"],
   },
   shoulder: {
     name: "Seated Machine Shoulder Press",
-    short: "Shoulder Press",
+    short: "Shoulder Press (Arşiv)",
+    trHint: "Oturarak Makine Omuz İtiş",
     group: "Omuz",
+    category: "upper",
+    rir: "RIR 1-2",
+    tempo: "Kontrollü",
+    rest: "90",
     alt: ["Seated Dumbbell Shoulder Press"],
-    note: "Dambıl alternatifinde sırt destekli sehpa kullan.",
   },
   fly: {
     name: "Pec Deck Fly / Machine Chest Fly",
-    short: "Pec Deck Fly",
+    short: "Pec Deck Fly (Arşiv)",
+    trHint: "Kelebek Göğüs İzolasyon",
     group: "Göğüs",
+    category: "upper",
+    rir: "Failure",
+    tempo: "Kontrollü",
+    rest: "75",
     alt: ["Dumbbell Bench Press"],
   },
   reverse: {
     name: "Reverse Pec Deck / Machine Reverse Fly",
-    short: "Reverse Fly",
+    short: "Reverse Fly (Arşiv)",
+    trHint: "Ters Kelebek Arka Omuz",
     group: "Arka omuz",
-    alt: ["Incline Bench Chest-Supported Dumbbell Row"],
-    note: "Row alternatifi aynı hareket değildir; destekli sırt çalışması olarak kullanılır.",
+    category: "upper",
+    rir: "Beyond Failure",
+    tempo: "Akıcı",
+    rest: "60",
+    alt: [],
   },
   hammer: {
     name: "Seated Dumbbell Hammer Curl",
-    short: "Hammer Curl",
+    short: "Hammer Curl (Arşiv)",
+    trHint: "Oturarak Çekiç Tutuş Biceps",
     group: "Biceps",
+    category: "upper",
+    rir: "RIR 1",
+    tempo: "Kontrollü",
+    rest: "60",
     alt: [],
   },
 };
+
 export const DAYS = [
   {
     day: "Salı",
-    title: "Göğüs & sırt",
-    focus: "Chest Press ve Row öncelikli.",
-    duration: "60-75 dk",
+    code: "GÜN A",
+    title: "Ön Zincir (Kuadriseps) & Üst İtiş",
+    focus: "Sağ kuadriseps eksantrik kontrolü (titreme sıfırlama) + Göğüs, Omuz ve Triceps hipertrofisi.",
+    duration: "75-85 dk",
     rows: [
-      ["chest", 3, 8, 12],
-      ["row", 3, 8, 12],
-      ["lat", 2, 10, 12],
-      ["lateral", 2, 12, 15],
-      ["preacher", 2, 10, 15],
-      ["triceps", 2, 10, 15],
+      ["leg_press_ecc", 4, 10, 12],
+      ["step_up", 3, 10, 10],
+      ["leg_curl_21", 4, 12, 15],
+      ["hip_abductor", 3, 15, 15],
+      ["incline_db_press", 4, 6, 8],
+      ["cable_cross_fly", 3, 12, 15],
+      ["seated_ohp", 4, 8, 10],
+      ["seated_lat_raise", 4, 12, 15],
+      ["rope_pushdown", 4, 8, 10],
     ],
   },
   {
     day: "Perşembe",
-    title: "Omuz & sırt",
-    focus: "Omuz itişi, destekli sırt ve arka omuz.",
-    duration: "60-75 dk",
+    code: "GÜN B",
+    title: "Arka Zincir (Hamstring) & Üst Çekiş",
+    focus: "ACL koruyucu arka bacak/kalça inşası (H/Q oranı) + Sırt, Arka Omuz ve Biceps hipertrofisi.",
+    duration: "75-85 dk",
     rows: [
-      ["shoulder", 3, 8, 12],
-      ["row", 3, 10, 12],
-      ["fly", 2, 10, 15],
-      ["reverse", 2, 12, 15],
-      ["hammer", 2, 10, 15],
-      ["triceps", 2, 10, 15],
+      ["db_rdl", 3, 10, 12],
+      ["uni_leg_curl", 4, 12, 15],
+      ["ecc_step_down", 3, 8, 10],
+      ["single_calf_raise", 4, 15, 20],
+      ["wide_lat_pulldown", 4, 8, 10],
+      ["supported_row", 4, 10, 12],
+      ["rope_pullover", 3, 12, 15],
+      ["reverse_pec_deck", 3, 12, 15],
+      ["preacher_curl", 4, 8, 10],
     ],
   },
   {
     day: "Cumartesi",
-    title: "Dengeli üst gövde",
-    focus: "Lat Pulldown öncelikli, daha düşük hacim.",
-    duration: "50-65 dk",
+    code: "GÜN C",
+    title: "Atletik Simetri & Tam Üst Gövde",
+    focus: "Alt ekstremite kombine kuvvet-denge drilleri + tüm üst gövde kaslarına 2./3. frekans hipertrofi vuruşu.",
+    duration: "70-80 dk",
     rows: [
-      ["lat", 2, 10, 12],
-      ["chest", 2, 10, 12],
-      ["row", 2, 10, 12],
-      ["lateral", 2, 12, 15],
-      ["preacher", 2, 10, 15],
-      ["triceps", 2, 10, 15],
+      ["goblet_box_squat", 4, 10, 12],
+      ["chair_bridge", 3, 12, 15],
+      ["iso_leg_press", 3, 12, 15],
+      ["balance_side_plank", 3, 30, 30],
+      ["flat_chest_press", 3, 8, 10],
+      ["close_pulldown", 3, 8, 10],
+      ["cable_lat_raise", 3, 12, 15],
+      ["arm_superset", 3, 10, 12],
     ],
   },
 ];
-export function prescription(data, week, day) {
-  const s = data.sessions[`${week}-${day}`] || {};
-  const upper = DAYS[day].rows
-    .map(([id, sets, lo, hi], index) => {
-      const target = Math.max(
-        1,
-        (week === 1 || !data.weeks[week] || (day === 2 && s.physio)
-          ? 2
-          : sets) - (s.reduce ? 1 : 0),
-      );
-      return {
-        id,
-        lo,
-        hi,
-        index,
-        target,
-        count: s.setCounts?.[id] ?? target,
-        rest: index < 3 ? "90-120" : "60-90",
-      };
-    })
-    .filter(
-      (r) => !(day === 2 && s.physio && ["preacher", "triceps"].includes(r.id)),
-    );
-  const legs = [
-    ["legpress", 12],
-    ["legcurl", 12],
-    ["stepup", 10],
-    ["bridge", 15],
-    ["balance", 30],
-  ];
-  return upper.concat(
-    legs
-      .filter(
-        ([id]) =>
-          s.rehab ||
-          Object.keys(s.entries || {}).some((k) => k.startsWith(id + "-")),
-      )
-      .map(([id, reps], index) => ({
-        id,
-        lo: reps,
-        hi: reps,
-        target: 3,
-        count: s.setCounts?.[id] ?? 3,
-        index: DAYS[day].rows.length + index,
-        rest: "",
-      })),
+
+// 4-Stage Return-to-Performance (Sahaya Dönüş) Periodization Model
+// Program Week 1 = Post-Op Week 11 (Mid-October 2026) -> Program Week 22 = Post-Op Week 32 (March 2027)
+export const STAGES = [
+  {
+    stage: 1,
+    minWeek: 1,
+    maxWeek: 6,
+    postOpRange: "Post-Op 11–16. Hafta · Ekim Ortası - Kasım Sonu",
+    title: "1. Aşama: İleri Kuvvet, Eksantrik Hipertrofi ve Koşuya Hazırlık",
+    goal: "Sağ bacaktaki nöromüsküler titremeyi sıfırlamak, LSI ≥ %70'e ulaşmak ve 6 Klinik Koşuya Dönüş (RTR) testini sıfır ağrıyla geçmek.",
+    nextMilestone: "6. Hafta (Post-Op 16. Hafta) sonunda aşağıdaki 6 Klinik Koşuya Dönüş (RTR) testini tamamlayarak 2. Aşama (Doğrusal Koşu) onayını al.",
+    alertOnWeeks: [2, 6],
+    weekAlerts: {
+      2: "Post-Op 12. Hafta Eşiği: Dizde ödem yoksa RDL geçişi aktif; açık kinetik zincirde (Leg Extension) 90°–45° güvenli açıda hafif direnç eklenebilir.",
+      6: "AŞAMA GEÇİŞ HAFTASI (Post-Op 16. Hafta): 2. Aşamaya (Doğrusal Koşu Algoritması) geçmeden önce Program sekmesindeki 6 Klinik Koşuya Dönüş (RTR) testini doğrula!",
+    },
+    criteriaTitle: "1. Aşama Geçiş Kriterleri: 6 Klinik Koşuya Dönüş (RTR) Fonksiyonel Testi",
+    criteriaNote: "Ön koşul: Sıfır ödem/efüzyon, tam ekstansiyon (0°), >130° fleksiyon ve IKDC skoru > 64.",
+    criteria: [
+      {
+        id: "rtr_sit_stand",
+        name: "Tek Bacak Otur-Kalk (Single-Leg Sit-to-Stand)",
+        target: "10 nizami tekrar",
+        desc: "Standart sandalyeden/sehpadan yalnızca ameliyatlı sağ bacakla gövde savrulmadan ve diz içe çökmeden kalkıp oturma.",
+      },
+      {
+        id: "rtr_step_squat",
+        name: "Basamaktan Tek Bacak Squat (Single-Leg Squat from Step)",
+        target: "5 nizami tekrar",
+        desc: "Küçük basamak üzerinde sağ bacakla pelvik düşme ve dinamik valgus olmadan eksantrik çömelme/kalkma.",
+      },
+      {
+        id: "rtr_chair_bridge",
+        name: "Tek Bacak Hamstring Sandalye Köprüsü",
+        target: "20 kesintisiz tekrar",
+        desc: "Sağ topuk sandalye üzerinde, diz hafif bükülü pozisyonda arka bacakta kramp/çekme olmadan kalçayı kaldırma.",
+      },
+      {
+        id: "rtr_calf_raise",
+        name: "Tek Bacak Kalf Yükselmesi (Single-Leg Calf Raise)",
+        target: "20 nizami tekrar",
+        desc: "Sağ ayak üzerinde tam hareket açıklığında parmak ucuna yükselme (Aşil ve baldır simetrisi).",
+      },
+      {
+        id: "rtr_balance",
+        name: "Tek Bacak Denge (Single-Leg Balance)",
+        target: "30 saniye sarsıntısız",
+        desc: "Sağ ayak üzerinde, diz hafif bükülü ve gövde dik pozisyonda sabit duruş.",
+      },
+      {
+        id: "rtr_side_plank",
+        name: "Yan Plank (Side Plank Hold)",
+        target: "Her iki taraf 30 sn",
+        desc: "Gövde ve kalça abdüktörlerini aynı hizada tutarak izometrik yan köprü.",
+      },
+    ],
+  },
+  {
+    stage: 2,
+    minWeek: 7,
+    maxWeek: 13,
+    postOpRange: "Post-Op 17–23. Hafta · Aralık - Ocak Ortası (4 - 5,5. Ay)",
+    title: "2. Aşama: Doğrusal Koşu Algoritması ve Reaktif Kuvvet Başlangıcı",
+    goal: "%80 LSI hedefi; haftada 2 gün Doğrusal Koşu Programı (Seviye 1→5); alt gövdede Barbell Back Squat (0°-90°), Bulgar Squat ve Nordic Hamstring geçişi.",
+    nextMilestone: "Seviye 5 (20 dk kesintisiz koşu) ve %80 LSI tamamlandığında 14. Haftada 3. Aşamaya (COD & Topla Saha Drilleri) geçilir.",
+    alertOnWeeks: [7, 8, 13],
+    weekAlerts: {
+      7: "YENİ AŞAMA BAŞLANGICI (2. Aşama): 6 RTR testi geçildiyse haftada 2 gün Doğrusal Koşu (Seviye 1: 100m Jog / 300m Yürüyüş × 10 tur) başlıyor!",
+      8: "Post-Op 18. Hafta (%80 LSI Hedefi): Alt gövde hareketlerinde Barbell Squat (0°-90°), Bulgar Squat ve Nordic Hamstring varyasyonlarına kademeli geçiş yapabilirsin.",
+      13: "AŞAMA GEÇİŞ HAFTASI (Post-Op 23. Hafta): Doğrusal Koşu Seviye 5 (4 × 5 dk Jog) ağrısız tamamlandıysa haftaya 3. Aşamaya (Çeviklik & Topla Saha Drilleri) geçiyoruz!",
+    },
+    criteriaTitle: "2. Aşama İlerleme: Doğrusal Koşu Algoritması (Seviye 1–5)",
+    criteriaNote: "Haftalık hacim/şiddet artışı %10'u geçmemeli; ertesi sabah şişlik/ağrı olursa bir önceki seviyeye dönülür.",
+    criteria: [
+      {
+        id: "run_lvl_1",
+        name: "Koşu Seviye 1: 100m Jog / 300m Yürüyüş × 10 Tur",
+        target: "Toplam 4.000m (1.000m koşu)",
+        desc: "Ağrısız, sekmeden, sıfır ödem ile tamamlama.",
+      },
+      {
+        id: "run_lvl_2",
+        name: "Koşu Seviye 2: 200m Jog / 200m Yürüyüş × 8 Tur",
+        target: "Toplam 3.200m (1.600m koşu)",
+        desc: "Ağrısız, ertesi gün sabah tutukluğu yok.",
+      },
+      {
+        id: "run_lvl_3",
+        name: "Koşu Seviye 3: 400m Jog / 200m Yürüyüş × 5 Tur",
+        target: "Toplam 3.000m (2.000m koşu)",
+        desc: "Kusursuz koşu mekaniği, sıfır dinamik valgus.",
+      },
+      {
+        id: "run_lvl_4",
+        name: "Koşu Seviye 4: 800m Jog / 200m Yürüyüş × 3 Tur",
+        target: "Toplam 3.000m (2.400m koşu)",
+        desc: "Nefes ve kas dayanıklılığı uyumu.",
+      },
+      {
+        id: "run_lvl_5",
+        name: "Koşu Seviye 5: 5 Dakika Kesintisiz Jog × 4 Set (1-2 dk Yürüyüş)",
+        target: "20 Dakika Koşu",
+        desc: "Saha drillerine ve hızlanmaya (3. Aşama) geçiş onayı.",
+      },
+    ],
+  },
+  {
+    stage: 3,
+    minWeek: 14,
+    maxWeek: 19,
+    postOpRange: "Post-Op 24–29. Hafta · Ocak Ortası - Şubat Sonu (5,5 - 7. Ay)",
+    title: "3. Aşama: Çok Yönlü Çeviklik (COD), Pliometrik Güç ve Topla Saha Drilleri",
+    goal: "Alt vücut tekrarlarını 6-8 (RIR 1-2) kuvvet/patlayıcılık bandına çekmek; kızak itme/çekme, engelli sıçrama ve FIFA 15×12m topla saha drillerini tamamlamak.",
+    nextMilestone: "Planlı (Pre-planned) 45°/90°/120° yön değiştirmeler ve topla şut drilleri tamamlandığında 20. Haftada 4. Aşamaya (Mart Sahaya Dönüş) geçilir.",
+    alertOnWeeks: [14, 19],
+    weekAlerts: {
+      14: "YENİ AŞAMA BAŞLANGICI (3. Aşama): Salonda alt gövde setleri 6-8 tekrar (RIR 1-2) kuvvet bandına çekiliyor. Sahada 8 çizerek koşu, yan adım ve topla pas drilleri başlıyor!",
+      19: "AŞAMA GEÇİŞ HAFTASI (Post-Op 29. Hafta): Haftaya Mart Ayı 4. Aşamaya (Reaktif Santrfor Drilleri & RTS Test Bataryası) geçiyoruz!",
+    },
+    criteriaTitle: "3. Aşama Saha & Kuvvet Kilometre Taşları (COD & Topla Progresyon)",
+    criteriaNote: "FIFA standardı: 15×12m alanda sağ/sol ayak dengeli, 1:2 çalışma-dinlenme oranıyla 30-60 sn × 3-4 set.",
+    criteria: [
+      {
+        id: "cod_gym_power",
+        name: "Salon Kuvvet/Patlayıcılık: 6–8 Tekrar Bandı & Sled/Hurdle Hop",
+        target: "RIR 1-2 · Tam Kontrol",
+        desc: "Resisted Sled Acceleration, Resisted Walking Lunge ve Single-Leg Hurdle Hops entegrasyonu.",
+      },
+      {
+        id: "cod_angles",
+        name: "Çok Yönlü Koşu: Figure-of-8, Lateral Shuffle & 45°/90°/120° Kesmeler",
+        target: "Alçak ağırlık merkezi",
+        desc: "Kalça düşmesi (hip drop) ve diz içe çökmesi olmadan planlı yön değiştirme ve frenleme.",
+      },
+      {
+        id: "cod_ball_drills",
+        name: "FIFA 15×12m Topla Progresyon: Pas, Vole ve Slalom Dönüş",
+        target: "3-4 Set × 30-60 sn",
+        desc: "Sabit/hareketli topa pas, ayak üstü uzun pas, çabuk ayak merdiven + vole vuruşları.",
+      },
+    ],
+  },
+  {
+    stage: 4,
+    minWeek: 20,
+    maxWeek: 52,
+    postOpRange: "Post-Op 30+ Hafta · Mart 2027 (7,5 – 8+ Ay · Sahaya Dönüş)",
+    title: "4. Aşama: Mart Ayı Sahaya Dönüş, Reaktif Santrfor Drilleri ve RTS Bataryası",
+    goal: "Reaktif (Open Skill) 10-25m patlayıcı sprintler, sırtı dönük top alıp keskin dönüşle şut, 1v1 hücum ve 5'li Taburculuk Test Bataryasını (LSI ≥ %90-95) geçmek.",
+    nextMilestone: "Mart ayı hedefi: Kontrollü saha antrenmanlarına ve temassız takım idmanlarına tam atletik dönüş; RTS test bataryası (%90+ LSI) onayıyla tam temaslı maçlara geçiş.",
+    alertOnWeeks: [20, 22],
+    weekAlerts: {
+      20: "YENİ AŞAMA BAŞLANGICI (4. Aşama - Mart Sahaya Dönüş): Reaktif (Open Skill) santrfor drilleri, 10-25m sprintler, Star Run, T-Testi ve 5-0-5 çeviklik fazı aktif!",
+      22: "POST-OP 32. HAFTA (8. Ay Hedefi): Takım idmanlarına ve müsabakalara tam geçiş için aşağıdaki 5'li RTS / RTP Taburculuk Test Bataryasını doğrula!",
+    },
+    criteriaTitle: "4. Aşama: Spora ve Performansa Dönüş (RTS / RTP) Taburculuk Test Bataryası",
+    criteriaNote: "Kriterleri eksiksiz karşılayan sporcularda yeniden yaralanma oranı %38,2'den %5,6'ya düşmektedir.",
+    criteria: [
+      {
+        id: "rts_isokinetic",
+        name: "Maksimal Kas Kuvveti (İzokinetik 60°, 180°, 300°/sn)",
+        target: "Quad & Hamstring LSI ≥ %90–95",
+        desc: "Kuadriseps > %260 Vücut Ağırlığı (~3.0-3.5 Nm/kg); Hamstring > %170 VA (~1.2-1.5 Nm/kg).",
+      },
+      {
+        id: "rts_hq_ratio",
+        name: "Hamstring / Kuadriseps Fonksiyonel Tork Oranı (H/Q Ratio)",
+        target: "H/Q Oranı > %60–65",
+        desc: "Arka bacağın, kuadrisepsin öne çekme kuvvetini (anterior tibial translasyon) dengelemesi.",
+      },
+      {
+        id: "rts_rfd",
+        name: "Kuvvet Gelişim Hızı (RFD) & Frenleme Simetrisi",
+        target: "RFD LSI ≥ %90 (Asimetri < %10)",
+        desc: "200 milisaniyenin altında eklem koruyucu eksantrik frenleme kuvveti üretimi.",
+      },
+      {
+        id: "rts_hop_battery",
+        name: "Fonksiyonel Güç: 4'lü Sıçrama Bataryası (Single, Triple, Crossover, 6m Timed)",
+        target: "Tüm 4 testte LSI ≥ %90 · RSI ≥ %85-90",
+        desc: "Yalnızca mesafe değil, iniş esnasında sıfır dinamik valgus ve kusursuz gövde kontrolü.",
+      },
+      {
+        id: "rts_psych",
+        name: "Psikolojik Hazırlık & Semptom (ACL-RSI & IKDC Skoru)",
+        target: "ACL-RSI > 65 · IKDC > 64 · Sıfır Ödem",
+        desc: "Kinezyofobi (yeniden yaralanma korkusu) olmadan sahada tam özgüven ve sıfır efüzyon.",
+      },
+    ],
+  },
+];
+
+export function getStageForWeek(week) {
+  const w = Number(week) || 1;
+  return (
+    STAGES.find((s) => w >= s.minWeek && w <= s.maxWeek) ||
+    STAGES[STAGES.length - 1]
   );
 }
 
-// Explicit per-session adoption. Never re-label or overwrite an existing session.
-export function applyThreeSetSession(data, week, day) {
-  const key = `${week}-${day}`;
-  if (!/^[1-4]-[0-2]$/.test(key)) return false;
-  const existing = data.sessions[key];
-  if (
-    existing &&
-    Object.values(existing).some(
-      (v) => v && (typeof v !== "object" || Object.keys(v).length),
-    )
-  )
-    return false;
-  data.sessions[key] = {
-    setCounts: Object.fromEntries(DAYS[day].rows.map(([id]) => [id, 3])),
-    alts: Object.fromEntries(
-      DAYS[day].rows
-        .filter(([id]) => ["lateral", "triceps"].includes(id))
-        .map(([id]) => [
-          id,
-          id === "lateral"
-            ? "Standing Dumbbell Lateral Raise"
-            : "Standing Cable Triceps Pushdown",
-        ]),
-    ),
-  };
-  return true;
+export function postOpWeek(week) {
+  return (Number(week) || 1) + 10;
+}
+
+export function prescription(data, week, day) {
+  const w = Number(week) || 1;
+  const s = data.sessions?.[`${w}-${day}`] || {};
+  const stage = getStageForWeek(w);
+  return DAYS[day].rows
+    .map(([id, sets, lo, hi], index) => {
+      const ex = EXERCISES[id];
+      // In Stage 3+ (Weeks 14+), lower-body ACL exercises shift to 6-8 rep strength/power band (except calf raise / isometric holds)
+      let targetLo = lo;
+      let targetHi = hi;
+      if (
+        stage.stage >= 3 &&
+        ex.category === "acl" &&
+        !["single_calf_raise", "balance_side_plank"].includes(id)
+      ) {
+        targetLo = 6;
+        targetHi = 8;
+      }
+      // Autoregulation reductions:
+      // - s.reduce (Sistemik yorgunluk / otoregülasyon): -1 set on all exercises (min 1)
+      // - s.physio (Klinik fizyoterapi / eklem koruma günü): -1 set on ACL lower-body exercises
+      const reduction =
+        (s.reduce ? 1 : 0) + (s.physio && ex.category === "acl" ? 1 : 0);
+      const target = Math.max(1, sets - reduction);
+      return {
+        id,
+        lo: targetLo,
+        hi: targetHi,
+        index,
+        target,
+        count: s.setCounts?.[id] ?? target,
+        rest: ex.rest || (index < 4 ? "90" : "75"),
+        rir:
+          s.reduce && ex.rir.includes("Failure")
+            ? "RIR 1-2 (Otoregülasyon)"
+            : ex.rir,
+        tempo: ex.tempo,
+        category: ex.category,
+      };
+    });
 }

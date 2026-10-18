@@ -11,10 +11,10 @@ const source = (
   await readFile(new URL("../public/sync.js", import.meta.url), "utf8")
 ).replace(/^import[\s\S]*?;\n/gm, "");
 const record = (kg) => ({
-  version: 2,
+  version: 4,
   weeks: {},
   sessions: {
-    "1-0": { entries: { "chest-0": { kg, reps: "10", done: true } } },
+    "1-0": { entries: { "leg_press_ecc-0": { kg, reps: "10", done: true } } },
   },
 });
 async function setup({
@@ -54,7 +54,7 @@ async function setup({
       return { ok: true, json: async () => ({ authenticated: true }) };
     if (opts.method === "PUT") {
       puts++;
-      assert.equal(opts.headers["X-Fitness-Schema"], "3");
+      assert.equal(opts.headers["X-Fitness-Schema"], "4");
       if (onPut) {
         const error = onPut({ get: () => data, set: (d) => (data = d), puts });
         if (error)
@@ -68,7 +68,7 @@ async function setup({
       etag = '"v2"';
       return {
         ok: true,
-        json: async () => ({ etag, updatedAt: "2026-09-26T10:00:00Z" }),
+        json: async () => ({ etag, updatedAt: "2026-10-18T10:00:00Z" }),
       };
     }
     return { ok: true, json: async () => ({ data: server, etag }) };
@@ -91,13 +91,13 @@ async function setup({
 test("successful sync marks cloud current only after a successful PUT", async () => {
   const a = await setup();
   assert.equal(a.puts(), 1);
-  assert.equal(a.server().sessions["1-0"].entries["chest-0"].kg, "20");
+  assert.equal(a.server().sessions["1-0"].entries["leg_press_ecc-0"].kg, "20");
   assert.equal(a.statuses.at(-1).state, "synced");
   a.close();
 });
 test("failed PUT keeps local entry and never reports synced", async () => {
   const a = await setup({ onPut: () => 503 });
-  assert.equal(a.get().sessions["1-0"].entries["chest-0"].kg, "20");
+  assert.equal(a.get().sessions["1-0"].entries["leg_press_ecc-0"].kg, "20");
   assert.equal(
     a.statuses.some((s) => s.state === "synced"),
     false,
@@ -111,11 +111,11 @@ test("edits made while PUT is in flight survive and are sent in the next sync", 
       if (puts === 1) set(record("25"));
     },
   });
-  assert.equal(a.get().sessions["1-0"].entries["chest-0"].kg, "25");
-  assert.equal(a.server().sessions["1-0"].entries["chest-0"].kg, "20");
+  assert.equal(a.get().sessions["1-0"].entries["leg_press_ecc-0"].kg, "25");
+  assert.equal(a.server().sessions["1-0"].entries["leg_press_ecc-0"].kg, "20");
   assert.notEqual(a.statuses.at(-1).state, "synced");
   await a.controller.sync();
-  assert.equal(a.server().sessions["1-0"].entries["chest-0"].kg, "25");
+  assert.equal(a.server().sessions["1-0"].entries["leg_press_ecc-0"].kg, "25");
   assert.equal(a.statuses.at(-1).state, "synced");
   a.close();
 });
@@ -132,7 +132,7 @@ test("conflict prevents automatic overwrite and exposes both choices", async () 
     /20.*30/,
   );
   await a.controller.sync("local", '"v1"');
-  assert.equal(a.server().sessions["1-0"].entries["chest-0"].kg, "20");
+  assert.equal(a.server().sessions["1-0"].entries["leg_press_ecc-0"].kg, "20");
   a.close();
 });
 test("remote data that cannot persist locally does not advance the merge base", async () => {

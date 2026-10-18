@@ -8,15 +8,23 @@ for (const weight of [400, 600, 800]) {
     `data:font/ttf;base64,${font.toString("base64")}`,
   );
 }
+for (const day of [0, 1, 2]) {
+  const img = await readFile(`public/assets/bg-day-${day}.jpg`);
+  css = css.replaceAll(
+    `./assets/bg-day-${day}.jpg`,
+    `data:image/jpeg;base64,${img.toString("base64")}`,
+  );
+}
 const modules = [];
-for (const name of ["sync-core", "program", "icons", "app"]) {
+for (const name of [
+  "sync-core",
+  "program",
+  "icons",
+  "exercise-visuals",
+  "app",
+]) {
   let source = await readFile(`public/${name}.js`, "utf8");
   source = source.replace(/^import[\s\S]*?;\n/gm, "").replace(/^export /gm, "");
-  if (name === "app")
-    source = source.replace(
-      /new URLSearchParams\(location.search\)\.get\(["']demo["']\)\s*===\s*["']1["']/,
-      "true",
-    );
   modules.push(source);
 }
 html = html
@@ -24,10 +32,6 @@ html = html
   .replace(
     /<script type="module"[^>]*><\/script>/,
     `<script type="module">${modules.join("\n").replace(/<\/script/gi, "<\\/script")}</script>`,
-  )
-  .replace(
-    /<a href="\/">Kendi günlüğüme dön<\/a>/,
-    "<span>Taşınabilir örnek görünüm.</span>",
   );
 await writeFile("preview.html", html);
-console.log("preview.html: self-contained fictional demo; no cloud access.");
+console.log("preview.html: self-contained preview built with embedded fonts, backgrounds, and exercise visuals.");

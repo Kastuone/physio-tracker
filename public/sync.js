@@ -77,6 +77,7 @@ function conflictDetails(result, local, remote, etag) {
     warmup: "Isınma",
     cooldown: "Seans sonu",
     skipped: "Atlanan seans",
+    criteria: "Aşama Kriteri",
   };
   const format = (v) =>
     v === undefined
@@ -134,7 +135,7 @@ async function sync(choice, approvedEtag) {
             method: "PUT",
             headers: {
               "Content-Type": "application/json",
-              "X-Fitness-Schema": "3",
+              "X-Fitness-Schema": "4",
             },
             body: JSON.stringify({ data: result.data, etag: remote.etag }),
           });
@@ -148,7 +149,6 @@ async function sync(choice, approvedEtag) {
           throw e;
         }
       }
-      // Preserve edits entered while the request was in flight.
       const now = normalize(app.getData()),
         pending = merge(snapshot, now, result.data);
       if (!same(now, pending.data) && !app.applyData(pending.data)) {
@@ -277,7 +277,6 @@ setInterval(() => {
   )
     sync();
 }, 30000);
-// The form is usable before the optional existing-session lookup finishes.
 authUI(false);
 badge("Oturum kontrol ediliyor", "syncing");
 const initialAuthVersion = authVersion;
