@@ -27,6 +27,7 @@ function app({ demo = false, stored = {}, quota = false } = {}) {
   });
   const w = dom.window;
   w.scrollTo = () => {};
+  w.setInterval = () => 1;
   w.matchMedia = () => ({ matches: true });
   w.HTMLElement.prototype.scrollIntoView = () => {};
   w.HTMLDialogElement.prototype.showModal = function () {
@@ -73,6 +74,15 @@ test("complete flow: log ACL & hypertrophy sets, switch days, verify background 
   assert.equal(a.d.documentElement.dataset.theme, "dark");
   assert.equal(a.d.body.dataset.day, "0");
 
+  // Hero showcase renders 3 cards on main training view
+  assert.equal(a.d.getElementById("hero-showcase").hidden, false);
+  assert.equal(a.d.getElementById("hero-weekly-pct").textContent, "65%");
+  assert.match(
+    a.d.getElementById("hero-program-title").textContent,
+    /BUGÜNKÜ PROGRAM \(GÜN A: SALI\)/,
+  );
+  assert.equal(a.d.querySelectorAll(".hero-prog-item").length, 4);
+
   // Toggle theme to light and back to dark
   click(a, "#theme-toggle");
   assert.equal(a.d.documentElement.dataset.theme, "light");
@@ -88,9 +98,13 @@ test("complete flow: log ACL & hypertrophy sets, switch days, verify background 
     true,
   );
 
-  // Switch to Day B (Thursday) -> background day updates to 1
+  // Switch to Day B (Thursday) -> background day updates to 1 and hero program title updates
   click(a, '[data-day="1"]');
   assert.equal(a.d.body.dataset.day, "1");
+  assert.match(
+    a.d.getElementById("hero-program-title").textContent,
+    /BUGÜNKÜ PROGRAM \(GÜN B: PERŞEMBE\)/,
+  );
   click(a, '[data-day="0"]');
   assert.equal(a.d.querySelector(input("leg_press_ecc-0", "kg")).value, "20");
 
@@ -102,6 +116,7 @@ test("complete flow: log ACL & hypertrophy sets, switch days, verify background 
 
   // Check History view includes both new entry AND Tamer's embedded historical logs (e.g. 65 kg × 10 tekrar from H4-0)
   click(a, '[data-view="history"]');
+  assert.equal(a.d.getElementById("hero-showcase").hidden, true);
   const historyText = a.d.getElementById("history-list").textContent;
   assert.match(historyText, /20 kg × 12 tekrar/);
   assert.match(historyText, /65 kg × 10 tekrar/);
@@ -144,7 +159,9 @@ test("add/remove set retains hidden values and restores them after reload", () =
   click(a, '[data-plus="leg_press_ecc"]');
   assert.equal(a.d.querySelector(input("leg_press_ecc-4", "kg")).value, "25");
   assert.equal(
-    a.d.querySelector('[data-done="leg_press_ecc-4"]').getAttribute("aria-pressed"),
+    a.d
+      .querySelector('[data-done="leg_press_ecc-4"]')
+      .getAttribute("aria-pressed"),
     "true",
   );
   a.close();
@@ -166,7 +183,9 @@ test("clearing completed weight reopens set; negative values are never saved", (
     undefined,
   );
   assert.equal(
-    a.d.querySelector(input("leg_press_ecc-0", "kg")).getAttribute("aria-invalid"),
+    a.d
+      .querySelector(input("leg_press_ecc-0", "kg"))
+      .getAttribute("aria-invalid"),
     "true",
   );
   a.close();
@@ -189,7 +208,10 @@ test("corrupt local data is not overwritten and cannot sync", () => {
   const a = app({ stored: { [KEY]: "{corrupt" } });
   assert.equal(a.w.localStorage.getItem(KEY), "{corrupt");
   assert.equal(a.w.fitnessApp.canSync(), false);
-  assert.equal(a.d.querySelector(input("leg_press_ecc-0", "kg")).disabled, true);
+  assert.equal(
+    a.d.querySelector(input("leg_press_ecc-0", "kg")).disabled,
+    true,
+  );
   a.close();
 });
 
@@ -200,7 +222,10 @@ test("all 3 days render exercise visuals and prior references from archived logs
   for (const day of [0, 1, 2]) {
     click(a, `[data-day="${day}"]`);
     assert.equal(a.d.querySelectorAll(".exercise").length, expectedCounts[day]);
-    assert.ok(a.d.querySelectorAll(".exercise-visual-card svg").length >= expectedCounts[day]);
+    assert.ok(
+      a.d.querySelectorAll(".exercise-visual-card svg").length >=
+        expectedCounts[day],
+    );
   }
   // Check that incline_db_press on Day 0 shows prior reference from archived chest log (65 kg × 10 tekrar)
   click(a, '[data-day="0"]');

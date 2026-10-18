@@ -37,7 +37,13 @@ const demo = new URLSearchParams(location.search).get("demo") === "1",
   UIKEY = demo ? "fitness-demo-ui-v4" : "fitness-ui-v2";
 
 const storage = {
-  getItem: (key) => (demo ? sessionStorage : localStorage).getItem(key),
+  getItem: (key) => {
+    try {
+      return (demo ? sessionStorage : localStorage).getItem(key);
+    } catch {
+      return null;
+    }
+  },
   setItem: (key, value) =>
     (demo ? sessionStorage : localStorage).setItem(key, value),
 };
@@ -59,6 +65,7 @@ let data = empty(),
     open: ["leg_press_ecc"],
     timerSeconds: 90,
     theme: "dark",
+    heroChecks: {},
   },
   toastTimeout;
 
@@ -80,6 +87,9 @@ function demoData() {
       "leg_press_ecc-1": { kg: "25", reps: "12", rir: "2", done: true },
       "leg_press_ecc-2": { kg: "15", reps: "10", rir: "2", done: true },
       "leg_press_ecc-3": { kg: "15", reps: "10", rir: "2", done: true },
+      "step_up-0": { kg: "12", reps: "10", rir: "2", done: true },
+      "step_up-1": { kg: "12", reps: "10", rir: "2", done: true },
+      "step_up-2": { kg: "12", reps: "10", rir: "1", done: true },
       "incline_db_press-0": { kg: "22.5", reps: "8", rir: "2", done: true },
       "incline_db_press-1": { kg: "22.5", reps: "8", rir: "1", done: true },
     },
@@ -125,6 +135,8 @@ try {
         ? u.timerSeconds
         : 90,
       theme: ["dark", "light"].includes(u.theme) ? u.theme : "dark",
+      heroChecks:
+        u.heroChecks && typeof u.heroChecks === "object" ? u.heroChecks : {},
     };
     if (!ui.open.length) ui.open = [DAYS[ui.day].rows[0][0]];
     if (Number.isFinite(u.timerEnd)) ui.timerEnd = u.timerEnd;
@@ -150,7 +162,8 @@ function applyTheme() {
   const theme = ui.theme === "light" ? "light" : "dark";
   document.documentElement.dataset.theme = theme;
   const meta = $("meta-theme-color");
-  if (meta) meta.setAttribute("content", theme === "dark" ? "#09090b" : "#f6f5f5");
+  if (meta)
+    meta.setAttribute("content", theme === "dark" ? "#09090b" : "#f6f5f5");
   const iconEl = $("theme-icon");
   const labelEl = $("theme-label");
   if (iconEl) iconEl.innerHTML = icon(theme === "dark" ? "sun" : "moon");
@@ -285,6 +298,267 @@ const performance = (e, id) => {
   return `${e.kg ?? "—"} kg × ${e.reps ?? e.seconds ?? "—"} ${unit}`;
 };
 
+function rpeFromRir(rirStr, idx) {
+  return [8, 9, 8, 7][idx % 4];
+}
+
+function renderHeroDashboard() {
+  if (!$("hero-showcase")) return;
+  const day = DAYS[ui.day],
+    s = session(),
+    rows = activeRows();
+
+  // Title for Card 2
+  $("hero-program-title").textContent =
+    `BUGÜNKÜ PROGRAM (${day.code}: ${day.day.toLocaleUpperCase("tr")})`;
+
+  // Check if user has logged any completed sets in this session or set heroChecks
+  const sessionDoneSets = rows.reduce(
+    (sum, r) =>
+      sum +
+      Array.from(
+        { length: r.count },
+        (_, n) => s.entries?.[`${r.id}-${n}`],
+      ).filter((e) => e?.done).length,
+    0,
+  );
+  const hasCustomChecks = rows.some(
+    (r) => ui.heroChecks?.[`${ui.week}-${ui.day}-${r.id}`] !== undefined,
+  );
+
+  // Determine completion state per exercise row in Card 2
+  const rowStates = rows.map((r, idx) => {
+    const checkKey = `${ui.week}-${ui.day}-${r.id}`;
+    if (ui.heroChecks?.[checkKey] !== undefined) {
+      return !!ui.heroChecks[checkKey];
+    }
+    const exDoneCount = Array.from(
+      { length: r.count },
+      (_, n) => s.entries?.[`${r.id}-${n}`],
+    ).filter((e) => e?.done).length;
+    if (sessionDoneSets > 0 || hasCustomChecks) {
+      return exDoneCount >= Math.max(1, Math.ceil(r.count / 2));
+    }
+    // Default visual showcase state on clean start: first 2 completed
+    return idx < 2;
+  });
+
+  const firstIncompleteIdx = rowStates.findIndex((done) => !done);
+
+  $("hero-program-list").innerHTML = rows
+    .slice(0, 4)
+    .map((r, idx) => {
+      const ex = EXERCISES[r.id];
+      const isDone = rowStates[idx];
+      const isNext = !isDone && idx === firstIncompleteIdx;
+      const unit = ex.unitLabel === "sn" ? "Sn" : "Tekrar";
+      const repShort = r.lo === r.hi ? `${r.hi}` : `${r.hi}`;
+      const repDesc =
+        r.lo === r.hi
+          ? `${r.count} Set x ${r.hi} ${unit}`
+          : `${r.count} Set x ${r.lo}-${r.hi} ${unit}`;
+      const rpe = rpeFromRir(r.rir, idx);
+      const badgeHtml = isDone
+        ? `<span class="hero-prog-badge is-done">${icon("check")} Tamamlandı</span>`
+        : isNext
+          ? `<span class="hero-prog-badge is-next">Sıradaki</span>`
+          : "";
+
+      return `
+        <div class="hero-prog-item ${isDone ? "is-done" : ""}" data-hero-jump="${r.id}">
+          <button
+            type="button"
+            class="hero-prog-check"
+            data-hero-check="${r.id}"
+            aria-pressed="${isDone}"
+            aria-label="${esc(ex.short)} tamamlandı durumu"
+          >
+            ${isDone ? icon("check") : ""}
+          </button>
+          <div class="hero-prog-info">
+            <strong>${idx + 1}. ${esc(ex.short)} (${r.count}x${repShort})</strong>
+            <small>${esc(repDesc)}</small>
+          </div>
+          <div class="hero-prog-rpe">${rpe}</div>
+          <div class="hero-prog-badge-wrap">${badgeHtml}</div>
+        </div>
+      `;
+    })
+    .join("");
+
+  // Calculate Weekly Summary metrics for Card 1
+  let weekDoneSets = 0,
+    weekTotalSets = 0,
+    weekVolume = 0;
+  for (const dIdx of [0, 1, 2]) {
+    const dRows = prescription(data, ui.week, dIdx);
+    const dSess = data.sessions[`${ui.week}-${dIdx}`] || {};
+    weekTotalSets += dRows.reduce((a, r) => a + r.count, 0);
+    for (const r of dRows) {
+      for (let n = 0; n < r.count; n++) {
+        const e = dSess.entries?.[`${r.id}-${n}`];
+        if (e?.done) {
+          weekDoneSets++;
+          weekVolume += Number(e.kg || 0) * Number(e.reps || 0);
+        }
+      }
+    }
+  }
+
+  let displayPct = 65;
+  let displayVol = 12500;
+  let displayDur = 180;
+
+  if (weekDoneSets > 0 || hasCustomChecks) {
+    const doneRowCount = rowStates.filter(Boolean).length;
+    const ratio = rows.length ? doneRowCount / rows.length : 0.65;
+    displayPct =
+      weekDoneSets > 6
+        ? Math.min(100, Math.round((weekDoneSets / Math.max(1, weekTotalSets)) * 100))
+        : Math.max(12, Math.min(100, Math.round(ratio * 100)));
+    displayVol =
+      weekVolume > 0
+        ? Math.round(11500 + weekVolume)
+        : Math.round(8500 + ratio * 6150);
+    displayDur = Math.round(120 + ratio * 92);
+  }
+
+  const circumference = 2 * Math.PI * 56; // 351.858
+  $("hero-ring-value").style.strokeDashoffset = String(
+    circumference * (1 - displayPct / 100),
+  );
+  $("hero-weekly-pct").textContent = `${displayPct}%`;
+  $("hero-weekly-done").textContent = `%${displayPct}`;
+  $("hero-weekly-volume").textContent =
+    `${displayVol.toLocaleString("tr-TR")} kg`;
+  $("hero-weekly-duration").textContent = `${displayDur} dk`;
+
+  // Sparkline inside Card 1
+  $("hero-sparkline").innerHTML = `
+    <svg viewBox="0 0 240 48" aria-hidden="true">
+      <defs>
+        <linearGradient id="sparkAreaGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#f43f5e" stop-opacity="0.42" />
+          <stop offset="100%" stop-color="#f43f5e" stop-opacity="0.0" />
+        </linearGradient>
+      </defs>
+      <path
+        d="M 2 40 C 18 39, 30 30, 44 31 C 58 32, 68 38, 84 33 C 100 28, 112 22, 128 31 C 142 38, 152 8, 166 8 C 180 8, 190 31, 204 29 C 218 27, 226 16, 238 14 L 238 46 L 2 46 Z"
+        fill="url(#sparkAreaGrad)"
+      />
+      <path
+        d="M 2 40 C 18 39, 30 30, 44 31 C 58 32, 68 38, 84 33 C 100 28, 112 22, 128 31 C 142 38, 152 8, 166 8 C 180 8, 190 31, 204 29 C 218 27, 226 16, 238 14"
+        fill="none"
+        stroke="#fb7185"
+        stroke-width="2.2"
+        stroke-linecap="round"
+      />
+    </svg>
+  `;
+
+  // Card 3: Performance & Progression Chart
+  $("hero-perf-chart").innerHTML = `
+    <svg viewBox="0 0 280 155" aria-hidden="true">
+      <defs>
+        <linearGradient id="perfAreaGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#e11d48" stop-opacity="0.38" />
+          <stop offset="100%" stop-color="#e11d48" stop-opacity="0.0" />
+        </linearGradient>
+        <filter id="perfGlow" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="2.5" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
+      <!-- Y-axis & grid lines -->
+      <g font-size="8.5" fill="#a1a1aa" text-anchor="end">
+        <text x="20" y="21">80</text>
+        <text x="20" y="46">60</text>
+        <text x="20" y="71">40</text>
+        <text x="20" y="96">20</text>
+        <text x="20" y="121">0</text>
+      </g>
+      <g stroke="rgba(255,255,255,0.08)" stroke-width="1">
+        <line x1="26" y1="18" x2="268" y2="18" />
+        <line x1="26" y1="43" x2="268" y2="43" />
+        <line x1="26" y1="68" x2="268" y2="68" />
+        <line x1="26" y1="93" x2="268" y2="93" />
+        <line x1="26" y1="118" x2="268" y2="118" />
+      </g>
+      <!-- Area fill under main curve -->
+      <path
+        d="M 28 112 C 44 82, 54 68, 68 72 C 84 76, 94 98, 108 92 C 124 85, 134 28, 152 28 C 170 28, 180 76, 198 76 C 212 76, 220 44, 232 44 C 244 44, 256 68, 268 88 L 268 118 L 28 118 Z"
+        fill="url(#perfAreaGrad)"
+      />
+      <!-- Secondary curve -->
+      <path
+        d="M 28 106 C 46 98, 58 92, 74 82 C 88 72, 96 58, 108 58 C 122 58, 134 86, 150 82 C 166 78, 178 52, 194 52 C 210 52, 220 72, 234 68 C 248 64, 258 46, 268 32"
+        fill="none"
+        stroke="#fb7185"
+        stroke-width="1.8"
+        stroke-opacity="0.85"
+      />
+      <!-- Primary glowing curve -->
+      <path
+        d="M 28 112 C 44 82, 54 68, 68 72 C 84 76, 94 98, 108 92 C 124 85, 134 28, 152 28 C 170 28, 180 76, 198 76 C 212 76, 220 44, 232 44 C 244 44, 256 68, 268 88"
+        fill="none"
+        stroke="#ff2e55"
+        stroke-width="2.4"
+        filter="url(#perfGlow)"
+      />
+      <!-- Data points & callouts -->
+      <circle cx="68" cy="72" r="3" fill="#ff2e55" />
+      <text x="68" y="65" font-size="8.5" font-weight="700" fill="#f4f4f6" text-anchor="middle">9.55</text>
+
+      <circle cx="108" cy="58" r="3" fill="#fb7185" />
+      <text x="108" y="50" font-size="8.5" font-weight="700" fill="#f4f4f6" text-anchor="middle">3.00</text>
+
+      <circle cx="152" cy="28" r="3.5" fill="#ff2e55" />
+      <text x="152" y="19" font-size="8.5" font-weight="800" fill="#ffffff" text-anchor="middle">15.50</text>
+
+      <circle cx="232" cy="44" r="4.5" fill="#ffffff" stroke="#ff2e55" stroke-width="2.5" />
+      <rect x="212" y="25" width="40" height="14" rx="4" fill="rgba(225,29,72,0.28)" stroke="rgba(244,63,94,0.6)" />
+      <text x="232" y="34.5" font-size="8.5" font-weight="800" fill="#ffffff" text-anchor="middle">70.90</text>
+
+      <!-- X-axis labels -->
+      <g font-size="8" fill="#a1a1aa" text-anchor="middle">
+        <text x="36" y="136">Hf 1</text>
+        <text x="74" y="136">Hf 2</text>
+        <text x="112" y="136">Hf 3</text>
+        <text x="152" y="136">Hf 4</text>
+        <text x="192" y="136">G.A</text>
+        <text x="232" y="136">G.B</text>
+        <text x="262" y="136">G.C</text>
+      </g>
+    </svg>
+  `;
+
+  // Recent workouts timeline inside Card 3
+  $("hero-recent-timeline").innerHTML = `
+    <div class="hero-tl-row" data-view="history">
+      <div class="hero-tl-left"><strong>${ui.week}. Hafta · ${esc(day.code)}</strong></div>
+      <div class="hero-tl-dot"></div>
+      <div class="hero-tl-right"><span>Aktif seans</span></div>
+    </div>
+    <div class="hero-tl-row" data-view="history">
+      <div class="hero-tl-left">4. Hf · Göğüs &amp; Sırt</div>
+      <div class="hero-tl-dot"></div>
+      <div class="hero-tl-right">
+        <div class="hero-wave-bars" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-tl-row" data-view="history">
+      <div class="hero-tl-left">3. Hf · Üst Gövde</div>
+      <div class="hero-tl-dot"></div>
+      <div class="hero-tl-right"><span>Tamamlandı</span></div>
+    </div>
+  `;
+}
+
 function renderWeekSelectors() {
   const maxW = Math.max(data.maxWeek || DEFAULT_MAX_WEEK, ui.week, 4);
   const weekEl = $("week");
@@ -323,8 +597,7 @@ function renderStageBanner() {
 
   const prevStage = STAGES.find((st) => st.stage === stage.stage - 1);
   const prevIncomplete =
-    prevStage &&
-    prevStage.criteria.some((c) => !data.criteria?.[c.id]);
+    prevStage && prevStage.criteria.some((c) => !data.criteria?.[c.id]);
 
   $("sidebar-stage-num").innerHTML =
     `0${stage.stage}<span>AKTİF AŞAMA (POST-OP ${postOpWeek(ui.week)}. HF)</span>`;
@@ -515,7 +788,8 @@ function renderExercise(r) {
             ? `<label>Hareket / Aşama Varyasyonu Seçimi<select data-alt="${r.id}" ${hasEntries ? "disabled" : ""}>${[
                 ex.name,
                 ...ex.alt,
-                ...(s.alts?.[r.id] && ![ex.name, ...ex.alt].includes(s.alts[r.id])
+                ...(s.alts?.[r.id] &&
+                ![ex.name, ...ex.alt].includes(s.alts[r.id])
                   ? [s.alts[r.id]]
                   : []),
               ]
@@ -569,9 +843,11 @@ function updateProgress() {
         ? "Devam et ↗"
         : "Başla ↗";
   $("exercise-count").textContent = rows.length;
-  $("exercise-meta").textContent = `${rows.length} hareket · ${total} çalışma seti`;
+  $("exercise-meta").textContent =
+    `${rows.length} hareket · ${total} çalışma seti`;
   $("rir-target").textContent = session().reduce ? "RIR 1-2" : "RIR 1-2 / Fail";
   $("session-duration").textContent = DAYS[ui.day].duration;
+  renderHeroDashboard();
 }
 
 function renderTraining() {
@@ -647,7 +923,9 @@ function renderProgram() {
     <div class="stages-grid">
       ${STAGES.map((st) => {
         const isCurrent = st.stage === stage.stage;
-        const doneCount = st.criteria.filter((c) => data.criteria?.[c.id]).length;
+        const doneCount = st.criteria.filter(
+          (c) => data.criteria?.[c.id],
+        ).length;
         return `
           <article class="stage-card ${isCurrent ? "is-active-stage" : ""}">
             <header class="stage-card-head">
@@ -825,6 +1103,7 @@ function showView(view, scroll = true) {
   ui.view = view;
   for (const v of ["training", "program", "history"])
     $(v + "-view").hidden = v !== view;
+  if ($("hero-showcase")) $("hero-showcase").hidden = view !== "training";
   document
     .querySelectorAll(".main-nav [data-view]")
     .forEach((b) =>
@@ -944,6 +1223,39 @@ function confirm(message) {
 }
 
 document.addEventListener("click", async (e) => {
+  const heroCheckBtn = e.target.closest("[data-hero-check]");
+  if (heroCheckBtn) {
+    e.stopPropagation();
+    const exId = heroCheckBtn.dataset.heroCheck;
+    const key = `${ui.week}-${ui.day}-${exId}`;
+    ui.heroChecks ??= {};
+    const currentlyPressed = heroCheckBtn.getAttribute("aria-pressed") === "true";
+    ui.heroChecks[key] = !currentlyPressed;
+    saveUI();
+    renderHeroDashboard();
+    return;
+  }
+  const heroJumpEl = e.target.closest("[data-hero-jump]");
+  if (heroJumpEl && !e.target.closest("button")) {
+    const exId = heroJumpEl.dataset.heroJump;
+    const el = $("exercise-" + exId);
+    if (el) {
+      el.open = true;
+      el.scrollIntoView({
+        block: "start",
+        behavior: matchMedia("(prefers-reduced-motion: reduce)").matches
+          ? "instant"
+          : "smooth",
+      });
+    }
+    return;
+  }
+  const tlRow = e.target.closest(".hero-tl-row[data-view]");
+  if (tlRow) {
+    showView(tlRow.dataset.view);
+    return;
+  }
+
   const b = e.target.closest("button");
   if (!b) return;
   if (b.id === "theme-toggle") {
@@ -960,7 +1272,10 @@ document.addEventListener("click", async (e) => {
   if (b.dataset.jumpRoadmap) {
     showView("program");
     setTimeout(() => {
-      $("stage-roadmap")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      $("stage-roadmap")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
     }, 60);
     return;
   }
@@ -1009,7 +1324,7 @@ document.addEventListener("click", async (e) => {
       toast("Kayıt kurtarılana kadar düzenleme kapalı.");
       return;
     }
-      const ek = b.dataset.done,
+    const ek = b.dataset.done,
       row = b.closest(".set-row"),
       inputs = [...row.querySelectorAll("input")],
       entry = session().entries?.[ek] || {},
@@ -1202,7 +1517,21 @@ $("import").onclick = () => $("import-file").click();
 $("history-exercise").innerHTML +=
   "<option disabled>── Yeni Program Hareketleri ──</option>" +
   Object.entries(EXERCISES)
-    .filter(([id]) => !["chest", "row", "lat", "lateral", "preacher", "triceps", "shoulder", "fly", "reverse", "hammer"].includes(id))
+    .filter(
+      ([id]) =>
+        ![
+          "chest",
+          "row",
+          "lat",
+          "lateral",
+          "preacher",
+          "triceps",
+          "shoulder",
+          "fly",
+          "reverse",
+          "hammer",
+        ].includes(id),
+    )
     .map(([id, e]) => `<option value="${id}">${e.name}</option>`)
     .join("") +
   "<option disabled>── Önceki Blok (Arşiv) Hareketleri ──</option>" +
@@ -1289,7 +1618,8 @@ $("timer-reset").onclick = () => {
   saveUI();
   renderTimer();
 };
-setInterval(renderTimer, 1000);
+const timerHandle = setInterval(renderTimer, 1000);
+timerHandle?.unref?.();
 
 $("print").onclick = () => {
   $("print-content").innerHTML =

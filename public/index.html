@@ -17,7 +17,7 @@
       rel="icon"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='8' fill='%2309090b' stroke='%23e11d48' stroke-width='3'/%3E%3Ctext x='9' y='29' fill='%23e11d48' font-size='28' font-weight='800' font-family='sans-serif'%3E/%3C/text%3E%3C/svg%3E"
     />
-    <link rel="stylesheet" href="/studio.css?v=4" />
+    <link rel="stylesheet" href="/studio.css?v=5" />
   </head>
   <body data-day="0">
     <!-- Subtle Day-Specific Fitness Background Stage -->
@@ -42,7 +42,7 @@
       <nav class="main-nav" aria-label="Ana gezinme">
         <button data-view="training" aria-current="page">
           <span data-icon="barbell"></span><span>Antrenman</span
-          ><span class="nav-arrow">↗</span>
+          ><span class="nav-arrow">›</span>
         </button>
         <button data-view="program">
           <span data-icon="calendar"></span><span>Program &amp; Aşamalar</span>
@@ -53,7 +53,7 @@
       </nav>
       <div class="sidebar-bottom">
         <div class="block-number" id="sidebar-stage-num">
-          01<span>AKTİF AŞAMA (RTP)</span>
+          01<span>AKTİF AŞAMA (POST-OP 11. HF)</span>
         </div>
         <p id="sidebar-stage-caption">
           Eksantrik kontrol.<br />Maksimum hipertrofi.
@@ -66,6 +66,102 @@
       </div>
     </aside>
     <div class="workspace">
+      <!-- Top Hero Dashboard Showcase (3 Cards: Haftalık Özet, Bugünkü Program, Performans ve Gelişim) -->
+      <section
+        id="hero-showcase"
+        class="hero-showcase"
+        aria-label="Haftalık özet ve performans paneli"
+      >
+        <div class="hero-showcase-bg" aria-hidden="true"></div>
+        <div class="hero-cards-grid">
+          <!-- Card 1: HAFTALIK ÖZET -->
+          <article class="hero-card hero-card-summary">
+            <header class="hero-card-head">
+              <h2>HAFTALIK ÖZET</h2>
+            </header>
+            <div class="hero-ring-wrap">
+              <svg viewBox="0 0 160 160" aria-hidden="true">
+                <defs>
+                  <linearGradient
+                    id="heroRingGrad"
+                    x1="0%"
+                    y1="0%"
+                    x2="100%"
+                    y2="100%"
+                  >
+                    <stop offset="0%" stop-color="#ff3358" />
+                    <stop offset="100%" stop-color="#e11d48" />
+                  </linearGradient>
+                </defs>
+                <circle class="hero-ring-track" cx="80" cy="80" r="56" />
+                <circle
+                  id="hero-ring-value"
+                  class="hero-ring-value"
+                  cx="80"
+                  cy="80"
+                  r="56"
+                />
+              </svg>
+              <div class="hero-ring-center">
+                <strong id="hero-weekly-pct">65%</strong>
+                <span>Tamamlandı</span>
+              </div>
+            </div>
+            <div class="hero-metrics">
+              <div class="hero-metric-row">
+                <span class="hero-metric-label">
+                  <span data-icon="bag"></span>
+                  <span>Toplam Hacim:</span>
+                </span>
+                <strong id="hero-weekly-volume">12.500 kg</strong>
+              </div>
+              <div class="hero-metric-row">
+                <span class="hero-metric-label">
+                  <span data-icon="checkCircle"></span>
+                  <span>Tamamlanan:</span>
+                </span>
+                <strong id="hero-weekly-done">%65</strong>
+              </div>
+              <div class="hero-metric-row">
+                <span class="hero-metric-label">
+                  <span data-icon="clock"></span>
+                  <span>Toplam Süre:</span>
+                </span>
+                <strong id="hero-weekly-duration">180 dk</strong>
+              </div>
+            </div>
+            <div class="hero-spark-section">
+              <span class="hero-spark-label">Aktif Süreç</span>
+              <div id="hero-sparkline" class="hero-sparkline"></div>
+            </div>
+          </article>
+
+          <!-- Card 2: BUGÜNKÜ PROGRAM -->
+          <article class="hero-card hero-card-program">
+            <header class="hero-card-head hero-program-head">
+              <h2 id="hero-program-title">BUGÜNKÜ PROGRAM (GÜN A: SALI)</h2>
+              <div class="hero-program-cols" aria-hidden="true">
+                <span>RPE</span>
+                <span>Badge</span>
+              </div>
+            </header>
+            <div id="hero-program-list" class="hero-program-list"></div>
+          </article>
+
+          <!-- Card 3: PERFORMANS VE GELİŞİM -->
+          <article class="hero-card hero-card-performance">
+            <header class="hero-card-head">
+              <h2>PERFORMANS VE GELİŞİM</h2>
+            </header>
+            <div id="hero-perf-chart" class="hero-perf-chart"></div>
+            <div class="hero-recent-section">
+              <h3>Son Antrenmanlar</h3>
+              <div id="hero-recent-timeline" class="hero-recent-timeline"></div>
+            </div>
+          </article>
+        </div>
+      </section>
+
       <header class="topbar">
         <a class="mobile-brand" href="#training">/ TRAINING LOG.</a>
         <span id="breadcrumb">Günlüğüm <span>/</span> Antrenman</span>
@@ -104,7 +200,8 @@
                 Ön Zincir <span>&amp; Üst İtiş.</span>
               </h1>
               <p class="subtitle" id="workout-subtitle">
-                Sağ kuadriseps eksantrik kontrolü + Göğüs, Omuz ve Triceps hipertrofisi.
+                Sağ kuadriseps eksantrik kontrolü + Göğüs, Omuz ve Triceps
+                hipertrofisi.
               </p>
             </div>
             <div class="week-controls">
@@ -174,7 +271,8 @@
                       step="0.5"
                       placeholder="10-12"
                     /><small
-                      >Antrenman başı Seviye 4 yüksek kadans ısınma süresi.</small
+                      >Antrenman başı Seviye 4 yüksek kadans ısınma
+                      süresi.</small
                     ></label
                   >
                   <label
@@ -447,6 +545,6 @@
     <noscript
       ><p>Set girişi ve eşitleme için JavaScript'i etkinleştir.</p></noscript
     >
-    <script type="module" src="/app.js?v=4"></script>
+    <script type="module" src="/app.js?v=5"></script>
   </body>
 </html>
