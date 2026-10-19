@@ -5,7 +5,7 @@ import {
   MAX_SETS,
   MAX_WEEKS,
   DEFAULT_MAX_WEEK,
-} from "./sync-core.js";
+} from "./sync-core.js?v=6";
 import {
   DAYS,
   EXERCISES,
@@ -14,9 +14,9 @@ import {
   getStageForWeek,
   postOpWeek,
   prescription,
-} from "./program.js";
-import { icon } from "./icons.js";
-import { getExerciseVisual } from "./exercise-visuals.js";
+} from "./program.js?v=6";
+import { icon } from "./icons.js?v=6";
+import { getExerciseVisual } from "./exercise-visuals.js?v=6";
 
 const $ = (id) => document.getElementById(id),
   esc = (v) =>
