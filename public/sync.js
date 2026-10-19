@@ -1,4 +1,4 @@
-import { empty, normalize, merge, same } from "./sync-core.js";
+import { empty, normalize, merge, same } from "./sync-core.js?v=6";
 const $ = (id) => document.getElementById(id),
   app = window.fitnessApp,
   BASE = "fitness-cloud-base-v1";
