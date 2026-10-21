@@ -9,7 +9,9 @@ const html = await readFile(
 );
 const source = (
   await readFile(new URL("../public/sync.js", import.meta.url), "utf8")
-).replace(/^import[\s\S]*?;\n/gm, "");
+)
+  .replace(/\r\n/g, "\n")
+  .replace(/^import[\s\S]*?;\n/gm, "");
 const record = (kg) => ({
   version: 4,
   weeks: {},

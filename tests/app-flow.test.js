@@ -13,7 +13,7 @@ const html = await readFile(
 );
 const src = (
   await readFile(new URL("../public/app.js", import.meta.url), "utf8")
-)
+).replace(/\r\n/g, "\n")
   .replace(/^import[\s\S]*?;\n/gm, "")
   .replace(/import\(["']\.\/sync\.js["']\)/, "Promise.resolve()");
 
@@ -76,7 +76,9 @@ test("complete flow: log ACL & hypertrophy sets, switch days, verify background 
 
   // Hero showcase renders 3 cards on main training view
   assert.equal(a.d.getElementById("hero-showcase").hidden, false);
-  assert.equal(a.d.getElementById("hero-weekly-pct").textContent, "65%");
+  assert.equal(a.d.getElementById("hero-weekly-pct").textContent, "0%");
+  assert.equal(a.d.getElementById("hero-weekly-volume").textContent, "0 kg");
+  assert.equal(a.d.querySelectorAll(".hero-prog-item.is-done").length, 0);
   assert.match(
     a.d.getElementById("hero-program-title").textContent,
     /BUGÜNKÜ PROGRAM \(GÜN A: SALI\)/,
@@ -101,6 +103,7 @@ test("complete flow: log ACL & hypertrophy sets, switch days, verify background 
   // Switch to Day B (Thursday) -> background day updates to 1 and hero program title updates
   click(a, '[data-day="1"]');
   assert.equal(a.d.body.dataset.day, "1");
+  assert.equal(a.d.querySelectorAll(".hero-prog-item.is-done").length, 0);
   assert.match(
     a.d.getElementById("hero-program-title").textContent,
     /BUGÜNKÜ PROGRAM \(GÜN B: PERŞEMBE\)/,
@@ -120,6 +123,31 @@ test("complete flow: log ACL & hypertrophy sets, switch days, verify background 
   const historyText = a.d.getElementById("history-list").textContent;
   assert.match(historyText, /20 kg × 12 tekrar/);
   assert.match(historyText, /65 kg × 10 tekrar/);
+  a.close();
+});
+
+test("dashboard completion and volume use workout records, not preview defaults or stale UI checks", () => {
+  const uiState = JSON.stringify({
+    week: 1,
+    day: 0,
+    view: "training",
+    heroChecks: { "1-0-leg_press_ecc": true, "1-0-step_up": true },
+  });
+  let a = app({ stored: { "fitness-ui-v2": uiState } });
+  assert.equal(a.d.querySelectorAll(".hero-prog-item.is-done").length, 0);
+  assert.match(a.d.getElementById("hero-sparkline").textContent, /henüz/);
+  a.close();
+
+  a = app();
+  for (let n = 0; n < 4; n++) {
+    fill(a, input(`leg_press_ecc-${n}`, "kg"), "20");
+    fill(a, input(`leg_press_ecc-${n}`, "reps"), "12");
+    click(a, `[data-done="leg_press_ecc-${n}"]`);
+  }
+  assert.equal(a.d.querySelectorAll(".hero-prog-item.is-done").length, 1);
+  assert.equal(a.d.getElementById("hero-weekly-done").textContent, "4/90 set");
+  assert.equal(a.d.getElementById("hero-weekly-volume").textContent, "960 kg");
+  assert.match(a.d.getElementById("hero-perf-chart").textContent, /960/);
   a.close();
 });
 

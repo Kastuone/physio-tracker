@@ -2806,7 +2806,7 @@ body[data-day="2"] .hero-showcase-bg {
   stroke-width: 11;
   stroke-linecap: round;
   stroke-dasharray: 351.858;
-  stroke-dashoffset: 123.15;
+  stroke-dashoffset: 351.858;
   filter: drop-shadow(0 0 9px rgba(225, 29, 72, 0.78));
   transition: stroke-dashoffset 0.45s var(--ease);
 }
@@ -2876,6 +2876,82 @@ body[data-day="2"] .hero-showcase-bg {
   height: 46px;
   display: block;
   overflow: visible;
+}
+.hero-week-progress {
+  height: 5px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+}
+.hero-week-progress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #fb7185;
+}
+.hero-sparkline p,
+.hero-empty-note,
+.hero-chart-caption {
+  color: #a1a1aa;
+  font-size: 11px;
+  line-height: 1.5;
+}
+.hero-sparkline p,
+.hero-chart-caption {
+  margin: 7px 0 0;
+}
+.hero-volume-chart {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  align-items: end;
+  gap: 8px;
+  min-height: 132px;
+  padding-top: 8px;
+}
+.hero-volume-column {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  align-items: end;
+  justify-items: center;
+  gap: 6px;
+  min-width: 0;
+  height: 122px;
+}
+.hero-volume-column strong {
+  max-width: 100%;
+  overflow: hidden;
+  color: #e4e4e7;
+  font-size: 9px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.hero-volume-bar {
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  width: 100%;
+  height: 78px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+.hero-volume-bar i {
+  display: block;
+  width: min(22px, 70%);
+  min-height: 3px;
+  border-radius: 5px 5px 0 0;
+  background: #e11d48;
+}
+.hero-volume-column small {
+  color: #a1a1aa;
+  font-size: 9px;
+  white-space: nowrap;
+}
+.hero-chart-caption {
+  margin-top: 8px;
+}
+.hero-prog-item:focus-visible,
+.hero-tl-row:focus-visible {
+  outline: 2px solid #fb7185;
+  outline-offset: 3px;
 }
 
 /* Card 2: BUGÜNKÜ PROGRAM */
@@ -3141,6 +3217,33 @@ body[data-day="2"] .hero-showcase-bg {
 @media (max-width: 700px) {
   .hero-showcase {
     padding: 18px 16px 22px;
+  }
+  .hero-showcase-bg {
+    background-image: linear-gradient(180deg, #111014 0%, #09090b 100%);
+    filter: none;
+  }
+  .hero-cards-grid {
+    gap: 12px;
+  }
+  .hero-card {
+    padding: 16px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .hero-ring-value {
+    filter: none;
+  }
+  .hero-volume-chart {
+    gap: 4px;
+    min-height: 118px;
+  }
+  .hero-volume-column {
+    height: 110px;
+  }
+  .hero-volume-column strong,
+  .hero-volume-column small {
+    font-size: 8px;
   }
   .hero-prog-item {
     grid-template-columns: 24px minmax(0, 1fr) 34px 86px;
